@@ -22,10 +22,10 @@ public class Controller extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession(true);
-        if (session.getAttribute("currentUser") == null) {
+        if (session.getAttribute("user") == null) {
             User user = new User();
             user.setRole(4); // guest role id
-            session.setAttribute("currentUser", user);
+            session.setAttribute("user", user);
         }
         CommandProvider.getInstance().provideCommand(request.getParameter("command")).execute(request, response);
     }

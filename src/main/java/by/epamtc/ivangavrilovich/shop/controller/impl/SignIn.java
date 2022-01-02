@@ -36,7 +36,7 @@ public class SignIn implements Command {
             //TODO add redirection to err page
         }
         //TODO totally fix
-        session.setAttribute("currentUser", currentUser);
+        session.setAttribute("user", currentUser);
         response.sendRedirect("main.jsp");
     }
 }

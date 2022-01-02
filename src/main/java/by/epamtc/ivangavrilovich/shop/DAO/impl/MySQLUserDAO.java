@@ -54,12 +54,13 @@ public class MySQLUserDAO implements UserDAO {
     @Override
     public User readUserByEmail(String email) throws DAOException {
         Connection conn = ConnectionProvider.getInstance().takeConnection();
-        String sql = String.format("SELECT * FROM users WHERE email='%s'", email);
+        String sql = String.format("SELECT * FROM users JOIN roles ON users.role = roles.role_id WHERE email='%s'", email);
         Statement st;
         ResultSet rs = null;
         int id = 0;
         String password = null;
         String defaultAddress = null;
+        String roleName = null;
         int role = 0;
         boolean banned = false;
         boolean wasFound = false;
@@ -71,6 +72,7 @@ public class MySQLUserDAO implements UserDAO {
                 id = rs.getInt("user_id");
                 password = rs.getString("password");
                 defaultAddress = rs.getString("default address");
+                roleName = rs.getString("name");
                 role = rs.getInt("role");
                 banned = rs.getBoolean("banned");
             }
@@ -82,7 +84,7 @@ public class MySQLUserDAO implements UserDAO {
             ConnectionProvider.getInstance().returnConnection(conn);
         }
 
-        return wasFound ? new User(id, email, password, defaultAddress, role, banned) : null;
+        return wasFound ? new User(id, email, password, defaultAddress, role, roleName, banned) : null;
     }
 
     @Override

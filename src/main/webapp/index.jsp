@@ -6,6 +6,10 @@
     <title>JSP - Hello World</title>
 </head>
 <body>
+
+<%--    <jsp:useBean id="name" class="_java._ee._02._servlet.usebean.SimpleBean" />--%>
+<%--    <c:set target="${name}" property="surname" value="Sidorov" />--%>
+
     <c:redirect url="main.jsp"/>
 </body>
 </html>
