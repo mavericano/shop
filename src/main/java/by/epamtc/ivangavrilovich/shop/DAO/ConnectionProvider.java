@@ -30,10 +30,9 @@ public class ConnectionProvider {
         InputStream a = this.getClass().getClassLoader().getResourceAsStream("db.properties");
         Properties properties = new Properties();
         try {
-            //TODO fix
             properties.load(a);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ConnectionPoolException("Error loading property files for database. Name for the file should be \"db.properties\"", e);
         }
         this.driverName = properties.getProperty("driverName");
         this.url = properties.getProperty("url");

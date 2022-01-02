@@ -1,11 +1,5 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: haiku
-  Date: 27.12.2021
-  Time: 20:26
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
     <title>Welcome</title>
@@ -19,7 +13,9 @@
             <a class="sign_in" href="sign_in.jsp">Sign in</a><br/>
             <a href="register.jsp">Sign up</a>
         </div>
-        <div class="lox">1</div>
+        <div class="lox">
+            <c:out value="${sessionScope.currentUser}"/>
+        </div>
         <div class="lox">2</div>
         <div class="lox">3</div>
         <div class="lox">4</div>

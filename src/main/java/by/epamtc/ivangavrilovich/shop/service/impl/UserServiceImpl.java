@@ -48,9 +48,7 @@ public class UserServiceImpl implements UserService {
                 throw new UserNotFoundException("No user with such email");
             }
         } catch (DAOException e) {
-            //TODO fix
-            e.printStackTrace();
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException("Error while fetching user by email", e);
         }
         String salt = result.getPassword().substring(0, 15);
         String passwordHash = Hasher.hashPassword(password, salt);

@@ -1,5 +1,7 @@
 package by.epamtc.ivangavrilovich.shop.service.hashing;
 
+import by.epamtc.ivangavrilovich.shop.service.exceptions.ServiceException;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -7,7 +9,7 @@ import java.security.SecureRandom;
 
 public class Hasher {
 
-    public static String hashPassword(String password, String salt) {
+    public static String hashPassword(String password, String salt) throws ServiceException {
         String generatedPassword = null;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -19,8 +21,7 @@ public class Hasher {
             }
             generatedPassword = sb.toString();
         } catch (NoSuchAlgorithmException e) {
-            //TODO replace
-            e.printStackTrace();
+            throw new ServiceException("Error while hashing", e);
         }
         return generatedPassword;
     }

@@ -9,12 +9,16 @@ import by.epamtc.ivangavrilovich.shop.service.ServiceProvider;
 import by.epamtc.ivangavrilovich.shop.service.UserService;
 import by.epamtc.ivangavrilovich.shop.service.exceptions.UserNotFoundException;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 public class SignIn implements Command {
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) {
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(true);
         UserService service = ServiceProvider.getInstance().getUserServiceImpl();
         String email = request.getParameter("email");
         String password = request.getParameter("password");
@@ -23,17 +27,16 @@ public class SignIn implements Command {
         try {
             currentUser = service.login(email, password);
         } catch (UserNotFoundException e) {
-            //TODO add redirection
-            request.setAttribute("message", "user not found");
-            System.out.println("net emaila");
+            request.setAttribute("message", "No user with such email");
+            request.getRequestDispatcher("sign_in.jsp").forward(request, response);
         } catch (InvalidPasswordException e) {
-            request.setAttribute("message", "invalid password");
-            System.out.println("paroli ne sovpali");
+            request.setAttribute("message", "Invalid password");
+            request.getRequestDispatcher("sign_in.jsp").forward(request, response);
         } catch (ServiceException e) {
-            //TODO add
+            //TODO add redirection to err page
         }
         //TODO totally fix
-        System.out.println("success");
-        //response.sendRedirect("main.jsp");
+        session.setAttribute("currentUser", currentUser);
+        response.sendRedirect("main.jsp");
     }
 }

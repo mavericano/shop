@@ -25,8 +25,7 @@ public class MySQLUserDAO implements UserDAO {
             ps.executeUpdate();
             ps.close();
         } catch (SQLException e) {
-            //TODO fix
-            e.printStackTrace();
+            throw new DAOException("Error while adding user", e);
         } finally {
             ConnectionProvider.getInstance().returnConnection(conn);
         }
@@ -78,8 +77,7 @@ public class MySQLUserDAO implements UserDAO {
             rs.close();
             st.close();
         } catch (SQLException e) {
-            //TODO fix
-            e.printStackTrace();
+            throw new DAOException("Error while adding user", e);
         } finally {
             ConnectionProvider.getInstance().returnConnection(conn);
         }
@@ -101,9 +99,7 @@ public class MySQLUserDAO implements UserDAO {
             rs.close();
             st.close();
         } catch (SQLException e) {
-            //TODO fix
-            e.printStackTrace();
-            throw new DAOException("", e);
+            throw new DAOException("Error while adding user", e);
         } finally {
             ConnectionProvider.getInstance().returnConnection(conn);
         }

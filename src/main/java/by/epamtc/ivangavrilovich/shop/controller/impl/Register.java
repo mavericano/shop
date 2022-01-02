@@ -27,11 +27,10 @@ public class Register implements Command {
         try {
             service.register(email, password, defaultAddress, role, banned);
         } catch (AlreadyRegisteredException e) {
-            //TODO add redirection
             request.setAttribute("message", "User with such email already registered");
             request.getRequestDispatcher("register.jsp").forward(request, response);
         } catch (ServiceException e) {
-            //TODO add
+            //TODO add redirection to err page
         }
         response.sendRedirect("main.jsp");
     }

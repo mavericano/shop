@@ -1,5 +1,7 @@
 package by.epamtc.ivangavrilovich.shop.controller;
 
+import by.epamtc.ivangavrilovich.shop.bean.User;
+
 import java.io.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
@@ -19,6 +21,12 @@ public class Controller extends HttpServlet {
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession(true);
+        if (session.getAttribute("currentUser") == null) {
+            User user = new User();
+            user.setRole(4); // guest role id
+            session.setAttribute("currentUser", user);
+        }
         CommandProvider.getInstance().provideCommand(request.getParameter("command")).execute(request, response);
     }
 
