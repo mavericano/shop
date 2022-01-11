@@ -4,56 +4,63 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class Product implements Serializable {
-    private int userId;
+    private int productId;
+    private String thumbnail;
     private String name;
     private float price;
     private int stock;
+    private int type;
+    private String typeName;
 
     public Product() {
     }
 
-    public Product(int userId, String name, float price, int stock) {
-        this.userId = userId;
+    public Product(int productId, String thumbnail, String name, float price, int stock, int type, String typeName) {
+        this.productId = productId;
+        this.thumbnail = thumbnail;
         this.name = name;
         this.price = price;
         this.stock = stock;
+        this.type = type;
+        this.typeName = typeName;
+    }
+
+    public Product(String thumbnail, String name, float price, int stock, int type) {
+        this.thumbnail = thumbnail;
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+        this.type = type;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o == null) return false;
-        if (o == this) return true;
-        if (o.getClass() != this.getClass()) return false;
-        Product that = (Product) o;
-
-        return (this.userId == that.userId) &&
-                (this.name.equals(that.name)) &&
-                (this.price == that.price) &&
-                (this.stock == that.stock);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return productId == product.productId && Float.compare(product.price, price) == 0 && stock == product.stock && type == product.type && Objects.equals(thumbnail, product.thumbnail) && Objects.equals(name, product.name) && Objects.equals(typeName, product.typeName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, name, price, stock);
+        return Objects.hash(productId, thumbnail, name, price, stock, type, typeName);
     }
 
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName() + "{" +
-                "id=" + userId +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                ", stock=" + stock +
-                '}';
+    public int getProductId() {
+        return productId;
     }
 
-    public int getUserId() {
-        return userId;
-    }
-
-//    public void setUserId(int userId) {
-//        this.userId = userId;
+//    public void setProductId(int productId) {
+//        this.productId = productId;
 //    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
 
     public String getName() {
         return name;
@@ -77,5 +84,21 @@ public class Product implements Serializable {
 
     public void setStock(int stock) {
         this.stock = stock;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 }

@@ -6,7 +6,9 @@ import by.epamtc.ivangavrilovich.shop.DAO.interfaces.UserDAO;
 import by.epamtc.ivangavrilovich.shop.bean.User;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class MySQLUserDAO implements UserDAO {
 
@@ -32,23 +34,112 @@ public class MySQLUserDAO implements UserDAO {
     }
 
     @Override
-    public boolean removeUser(User user) throws DAOException {
+    public boolean modifyDelStatus(User user, boolean newStatus) throws DAOException {
+        Connection conn = ConnectionProvider.getInstance().takeConnection();
+        String setExpr = buildSetExpr(user);
+        String sql = "UPDATE users SET del=? WHERE user_id = ?";
+        PreparedStatement ps = null;
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setBoolean(1, newStatus);
+            ps.setInt(2, user.getUserId());
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            throw new DAOException("Error while modifying user del status", e);
+        } finally {
+            ConnectionProvider.getInstance().returnConnection(conn);
+        }
         return false;
     }
 
+//    @Override
+//    public boolean restoreUser(User user) throws DAOException {
+//        return false;
+//    }
+
+    private String buildSetExpr(User user) {
+        StringJoiner sj = new StringJoiner(", ");
+        sj.add("password=" + user.getPassword());
+        sj.add("`default address`=" + user.getDefaultAddress());
+        sj.add("role=" + user.getRole());
+        sj.add("banned=" + user.isBanned());
+
+        return sj.setEmptyValue("").toString();
+    }
+
+//    private boolean toChangeBanState(int userId, boolean newState, Connection conn) {
+//        String sql = "SELECT banned FROM users WHERE user_id=?";
+//        PreparedStatement ps = null;
+//        ResultSet rs = null;
+//        boolean ret = false;
+//        try {
+//            ps = conn.prepareStatement(sql);
+//            ps.setInt(1, userId);
+//            rs = ps.executeQuery();
+//            ret = newState != rs.getBoolean("banned");
+//            rs.close();
+//            ps.close();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            //TODO fix
+//        }
+//        return ret;
+//    }
+
     @Override
     public boolean updateUser(User user) throws DAOException {
+        Connection conn = ConnectionProvider.getInstance().takeConnection();
+        String setExpr = buildSetExpr(user);
+        String sql = "UPDATE users SET " +
+                setExpr +
+                " WHERE user_id = ?";
+        PreparedStatement ps = null;
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, user.getUserId());
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            throw new DAOException("Error while updating user", e);
+        } finally {
+            ConnectionProvider.getInstance().returnConnection(conn);
+        }
         return false;
     }
 
     @Override
     public List<User> readUsers() throws DAOException {
         Connection conn = ConnectionProvider.getInstance().takeConnection();
-        String sql = "SELECT * FROM users";
-        //Statement st = conn.createStatement();
-        //st.executeQuery(sql);
+        String sql = "SELECT * FROM users JOIN roles ON users.role = roles.role_id";
+        Statement st;
+        ResultSet rs = null;
+        List<User> users = new ArrayList<>();
+        int id = 0;
+        String email;
+        String password = null;
+        String defaultAddress = null;
+        String roleName = null;
+        int role = 0;
+        boolean banned = false;
+        try {
+            st = conn.createStatement();
+            rs = st.executeQuery(sql);
+            while (rs.next()) {
+                id = rs.getInt("user_id");
+                email = rs.getString("email");
+                password = rs.getString("password");
+                defaultAddress = rs.getString("default address");
+                roleName = rs.getString("name");
+                role = rs.getInt("role");
+                banned = rs.getBoolean("banned");
+                users.add(new User(id, email, password, defaultAddress, role, roleName, banned));
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Error while reading all users", e);
+        }
         ConnectionProvider.getInstance().returnConnection(conn);
-        return null;
+        return users;
     }
 
     @Override
@@ -63,23 +154,27 @@ public class MySQLUserDAO implements UserDAO {
         String roleName = null;
         int role = 0;
         boolean banned = false;
+        boolean del = false;
         boolean wasFound = false;
         try {
             st = conn.createStatement();
             rs = st.executeQuery(sql);
             if (rs.next()) {
-                wasFound = true;
-                id = rs.getInt("user_id");
-                password = rs.getString("password");
-                defaultAddress = rs.getString("default address");
-                roleName = rs.getString("name");
-                role = rs.getInt("role");
-                banned = rs.getBoolean("banned");
+                del = rs.getBoolean("del");
+                if (!del) {
+                    wasFound = true;
+                    id = rs.getInt("user_id");
+                    password = rs.getString("password");
+                    defaultAddress = rs.getString("default address");
+                    roleName = rs.getString("name");
+                    role = rs.getInt("role");
+                    banned = rs.getBoolean("banned");
+                }
             }
             rs.close();
             st.close();
         } catch (SQLException e) {
-            throw new DAOException("Error while adding user", e);
+            throw new DAOException("Error while reading user by email", e);
         } finally {
             ConnectionProvider.getInstance().returnConnection(conn);
         }
@@ -93,18 +188,21 @@ public class MySQLUserDAO implements UserDAO {
         String sql = String.format("SELECT email FROM users WHERE email='%s'", email);
         Statement st;
         ResultSet rs;
-        boolean result;
+        boolean result = false;
         try {
             st = conn.createStatement();
             rs = st.executeQuery(sql);
-            result = rs.next();
+            if (rs.next())
+                if (!rs.getBoolean("del"))
+                    result = true;
             rs.close();
             st.close();
         } catch (SQLException e) {
-            throw new DAOException("Error while adding user", e);
+            throw new DAOException("Error while fetching user", e);
         } finally {
             ConnectionProvider.getInstance().returnConnection(conn);
         }
+
         return result;
     }
 }

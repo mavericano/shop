@@ -7,11 +7,9 @@ import java.util.List;
 
 public interface UserDAO {
     void addUser(User user) throws DAOException;
-    boolean removeUser(User user) throws DAOException;
+    boolean modifyDelStatus(User user, boolean newStatus) throws DAOException;
     boolean updateUser(User user) throws DAOException;
     List<User> readUsers() throws DAOException;
-
     User readUserByEmail(String email) throws DAOException;
-
     boolean hasUserWithEmail(String email) throws DAOException;
 }

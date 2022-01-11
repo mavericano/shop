@@ -1,3 +1,9 @@
+:root {
+    /*--mainColor: #ff9c9c;*/
+    /*--mainColor: #77DD77;*/
+    --mainColor: #F64A46;
+}
+
 body {
     color: #8f8f8f;
     font: 12px Tahoma, sans-serif;
@@ -86,4 +92,25 @@ nav li {
 .header {
     height: 10vh;
     background-color: salmon;
+}
+
+.itd_sign_in {
+
+    color: var(--bs-white);
+    background-color: var(--mainColor);
+    /*max-width: 200px;*/
+    /*width: 100px;*/
+    /*height: 60px;*/
+    /*display: block;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
+    /*cursor: pointer;*/
+    /*margin: 0 auto;*/
+    /*padding: 8px 30px;*/
+    /*transition: all 0.2s ease;*/
+}
+
+.itd_sign_in:hover {
+    color: var(--mainColor);
+    background-color: var(--bs-white);
 }
