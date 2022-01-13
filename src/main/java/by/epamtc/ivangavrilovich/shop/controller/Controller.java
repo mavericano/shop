@@ -1,6 +1,7 @@
 package by.epamtc.ivangavrilovich.shop.controller;
 
 import by.epamtc.ivangavrilovich.shop.bean.User;
+import by.epamtc.ivangavrilovich.shop.service.ServiceProvider;
 
 import java.io.*;
 import javax.servlet.ServletException;
@@ -28,8 +29,10 @@ public class Controller extends HttpServlet {
             session.setAttribute("user", user);
         }
         CommandProvider.getInstance().provideCommand(request.getParameter("command")).execute(request, response);
+        System.out.println(request.getParameter("command"));
     }
 
     public void destroy() {
+        ServiceProvider.getInstance().getUtilityServiceImpl().clearConnectionPool();
     }
 }

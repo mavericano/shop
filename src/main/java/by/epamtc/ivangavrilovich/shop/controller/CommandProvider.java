@@ -1,5 +1,6 @@
 package by.epamtc.ivangavrilovich.shop.controller;
 
+import by.epamtc.ivangavrilovich.shop.controller.impl.RedirectFromWelcomePage;
 import by.epamtc.ivangavrilovich.shop.controller.impl.Register;
 import by.epamtc.ivangavrilovich.shop.controller.impl.SignIn;
 import by.epamtc.ivangavrilovich.shop.controller.impl.WrongCommand;
@@ -13,7 +14,7 @@ public class CommandProvider {
     private CommandProvider(){
         commands.put("SIGN_IN", new SignIn());
         commands.put("REGISTER", new Register());
-        //commands.put("RETURN_TO_MENU", new ReturnToMenu());
+        commands.put("REDIRECT_FROM_WELCOME_PAGE", new RedirectFromWelcomePage());
         commands.put("WRONG_COMMAND", new WrongCommand());
     }
 

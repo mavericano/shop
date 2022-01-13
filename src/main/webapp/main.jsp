@@ -13,10 +13,10 @@
     <div class="col-1">z gbljhfc</div>
     <div class="col-2">
         <div class="header">
-            <c:if test="${empty sessionScope.user}">
-                <jsp:useBean id="user" class="by.epamtc.ivangavrilovich.shop.bean.User" scope="session"/>
-                <c:set target="${user}" property="role" value="${4}"/>
-            </c:if>
+<%--            <c:if test="${empty sessionScope.user}">--%>
+<%--                <jsp:useBean id="user" class="by.epamtc.ivangavrilovich.shop.bean.User" scope="session"/>--%>
+<%--                <c:set target="${user}" property="role" value="${4}"/>--%>
+<%--            </c:if>--%>
             <c:choose>
                 <c:when test="${sessionScope.user.role == 4}">
                     <a href="sign_in.jsp" class="btn btn-sm text-uppercase itd_sign_in">sign in</a>
@@ -27,7 +27,8 @@
             <c:out value="${sessionScope.user.role}"/>
         </div>
         <div class="lox">
-            <c:out value="${sessionScope.user}"/>
+            <c:out value="${sessionScope.user}"/><br/>
+            <c:out value="${sessionScope.popularProducts}"/>
         </div>
         <div class="lox">2</div>
         <div class="lox">3</div>

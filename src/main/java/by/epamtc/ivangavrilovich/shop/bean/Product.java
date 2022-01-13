@@ -7,7 +7,7 @@ public class Product implements Serializable {
     private int productId;
     private String thumbnail;
     private String name;
-    private float price;
+    private double price;
     private int stock;
     private int type;
     private String typeName;
@@ -15,7 +15,7 @@ public class Product implements Serializable {
     public Product() {
     }
 
-    public Product(int productId, String thumbnail, String name, float price, int stock, int type, String typeName) {
+    public Product(int productId, String thumbnail, String name, double price, int stock, int type, String typeName) {
         this.productId = productId;
         this.thumbnail = thumbnail;
         this.name = name;
@@ -25,7 +25,7 @@ public class Product implements Serializable {
         this.typeName = typeName;
     }
 
-    public Product(String thumbnail, String name, float price, int stock, int type) {
+    public Product(String thumbnail, String name, double price, int stock, int type) {
         this.thumbnail = thumbnail;
         this.name = name;
         this.price = price;
@@ -34,11 +34,24 @@ public class Product implements Serializable {
     }
 
     @Override
+    public String toString() {
+        return this.getClass().getSimpleName() +
+                "productId=" + productId +
+                ", thumbnail='" + thumbnail + '\'' +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", stock=" + stock +
+                ", type=" + type +
+                ", typeName='" + typeName + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return productId == product.productId && Float.compare(product.price, price) == 0 && stock == product.stock && type == product.type && Objects.equals(thumbnail, product.thumbnail) && Objects.equals(name, product.name) && Objects.equals(typeName, product.typeName);
+        return productId == product.productId && Double.compare(product.price, price) == 0 && stock == product.stock && type == product.type && Objects.equals(thumbnail, product.thumbnail) && Objects.equals(name, product.name) && Objects.equals(typeName, product.typeName);
     }
 
     @Override
@@ -70,11 +83,11 @@ public class Product implements Serializable {
         this.name = name;
     }
 
-    public float getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

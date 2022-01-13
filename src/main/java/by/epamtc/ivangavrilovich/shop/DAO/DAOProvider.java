@@ -1,10 +1,23 @@
 package by.epamtc.ivangavrilovich.shop.DAO;
 
+import by.epamtc.ivangavrilovich.shop.DAO.impl.MySQLProductDAO;
 import by.epamtc.ivangavrilovich.shop.DAO.impl.MySQLUserDAO;
+import by.epamtc.ivangavrilovich.shop.DAO.interfaces.ProductDAO;
 import by.epamtc.ivangavrilovich.shop.DAO.interfaces.UserDAO;
 
 public class DAOProvider {
-    private static DAOProvider instance = new DAOProvider();
+    private final static DAOProvider INSTANCE = new DAOProvider();
+    private UserDAO userDAOImpl;
+    private ProductDAO productDAOImpl;
+
+    private DAOProvider() {
+        userDAOImpl = new MySQLUserDAO();
+        productDAOImpl = new MySQLProductDAO();
+    }
+
+    public static DAOProvider getInstance() {
+        return INSTANCE;
+    }
 
     public UserDAO getUserDAOImpl() {
         return userDAOImpl;
@@ -14,14 +27,11 @@ public class DAOProvider {
         this.userDAOImpl = userDAOImpl;
     }
 
-    private UserDAO userDAOImpl;
-
-
-    private DAOProvider() {
-        userDAOImpl = new MySQLUserDAO();
+    public ProductDAO getProductDAOImpl() {
+        return productDAOImpl;
     }
 
-    public static DAOProvider getInstance() {
-        return instance;
+    public void setProductDAOImpl(ProductDAO productDAOImpl) {
+        this.productDAOImpl = productDAOImpl;
     }
 }

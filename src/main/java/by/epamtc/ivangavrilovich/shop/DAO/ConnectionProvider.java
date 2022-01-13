@@ -1,13 +1,9 @@
 package by.epamtc.ivangavrilovich.shop.DAO;
 
-import by.epamtc.ivangavrilovich.shop.ConnectionPoolException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
-import java.util.Locale;
 import java.util.Properties;
-import java.util.ResourceBundle;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 

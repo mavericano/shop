@@ -36,7 +36,6 @@ public class MySQLUserDAO implements UserDAO {
     @Override
     public boolean modifyDelStatus(User user, boolean newStatus) throws DAOException {
         Connection conn = ConnectionProvider.getInstance().takeConnection();
-        String setExpr = buildSetExpr(user);
         String sql = "UPDATE users SET del=? WHERE user_id = ?";
         PreparedStatement ps = null;
         try {
@@ -94,7 +93,7 @@ public class MySQLUserDAO implements UserDAO {
         String sql = "UPDATE users SET " +
                 setExpr +
                 " WHERE user_id = ?";
-        PreparedStatement ps = null;
+        PreparedStatement ps;
         try {
             ps = conn.prepareStatement(sql);
             ps.setInt(1, user.getUserId());
@@ -113,32 +112,37 @@ public class MySQLUserDAO implements UserDAO {
         Connection conn = ConnectionProvider.getInstance().takeConnection();
         String sql = "SELECT * FROM users JOIN roles ON users.role = roles.role_id";
         Statement st;
-        ResultSet rs = null;
+        ResultSet rs;
         List<User> users = new ArrayList<>();
-        int id = 0;
+        int id;
         String email;
-        String password = null;
-        String defaultAddress = null;
-        String roleName = null;
-        int role = 0;
-        boolean banned = false;
+        String password;
+        String defaultAddress;
+        String roleName;
+        int role;
+        boolean banned;
         try {
             st = conn.createStatement();
             rs = st.executeQuery(sql);
             while (rs.next()) {
-                id = rs.getInt("user_id");
-                email = rs.getString("email");
-                password = rs.getString("password");
-                defaultAddress = rs.getString("default address");
-                roleName = rs.getString("name");
-                role = rs.getInt("role");
-                banned = rs.getBoolean("banned");
-                users.add(new User(id, email, password, defaultAddress, role, roleName, banned));
+                if (!rs.getBoolean("del")) {
+                    id = rs.getInt("user_id");
+                    email = rs.getString("email");
+                    password = rs.getString("password");
+                    defaultAddress = rs.getString("default address");
+                    roleName = rs.getString("name");
+                    role = rs.getInt("role");
+                    banned = rs.getBoolean("banned");
+                    users.add(new User(id, email, password, defaultAddress, role, roleName, banned));
+                }
             }
+            rs.close();
+            st.close();
         } catch (SQLException e) {
             throw new DAOException("Error while reading all users", e);
+        } finally {
+            ConnectionProvider.getInstance().returnConnection(conn);
         }
-        ConnectionProvider.getInstance().returnConnection(conn);
         return users;
     }
 

@@ -1,4 +1,4 @@
-package by.epamtc.ivangavrilovich.shop;
+package by.epamtc.ivangavrilovich.shop.DAO;
 
 public class ConnectionPoolException extends RuntimeException {
     public ConnectionPoolException() {
