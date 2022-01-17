@@ -9,7 +9,7 @@ public class User implements Serializable {
     private int userId;
     private String email;
     private String password;
-    private String defaultAddress;
+    private String number;
     private int role;
     private String roleName;
     private boolean banned;
@@ -25,10 +25,10 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String email, String password, String defaultAddress, int role, boolean banned) {
+    public User(String email, String password, String number, int role, boolean banned) {
         this.email = email;
         this.password = password;
-        this.defaultAddress = defaultAddress;
+        this.number = number;
         this.role = role;
         this.banned = banned;
     }
@@ -38,8 +38,8 @@ public class User implements Serializable {
 //        this.userId = userId;
 //    }
 
-    public User(int userId, String email, String password, String defaultAddress, int role, String roleName, boolean banned) {
-        this(email, password, defaultAddress, role, banned);
+    public User(int userId, String email, String password, String number, int role, String roleName, boolean banned) {
+        this(email, password, number, role, banned);
         this.roleName = roleName;
         this.userId = userId;
     }
@@ -50,7 +50,7 @@ public class User implements Serializable {
                 "id=" + userId +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", defaultAddress='" + defaultAddress + '\'' +
+                ", number='" + number + '\'' +
                 ", role=" + role +
                 ", roleName=" + roleName +
                 '}';
@@ -65,13 +65,13 @@ public class User implements Serializable {
         return (this.userId == that.userId) &&
                 (this.email.equals(that.email)) &&
                 (this.password.equals(that.password)) &&
-                (this.defaultAddress.equals(that.defaultAddress)) &&
+                (this.number.equals(that.number)) &&
                 (this.role == that.role);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, email, password, defaultAddress, role);
+        return Objects.hash(userId, email, password, number, role);
     }
 
     public int getUserId() {
@@ -98,12 +98,12 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public String getDefaultAddress() {
-        return defaultAddress;
+    public String getNumber() {
+        return number;
     }
 
-    public void setDefaultAddress(String defaultAddress) {
-        this.defaultAddress = defaultAddress;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public int getRole() {

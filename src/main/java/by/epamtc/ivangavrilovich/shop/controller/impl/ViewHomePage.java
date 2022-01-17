@@ -3,9 +3,7 @@ package by.epamtc.ivangavrilovich.shop.controller.impl;
 import by.epamtc.ivangavrilovich.shop.bean.Product;
 import by.epamtc.ivangavrilovich.shop.controller.Command;
 import by.epamtc.ivangavrilovich.shop.service.ServiceProvider;
-import by.epamtc.ivangavrilovich.shop.service.UserService;
 import by.epamtc.ivangavrilovich.shop.service.UtilityService;
-import by.epamtc.ivangavrilovich.shop.service.exceptions.AlreadyRegisteredException;
 import by.epamtc.ivangavrilovich.shop.service.exceptions.ServiceException;
 
 import javax.servlet.ServletException;
@@ -14,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-public class RedirectFromWelcomePage implements Command {
+public class ViewHomePage implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         UtilityService service = ServiceProvider.getInstance().getUtilityServiceImpl();
@@ -24,6 +22,7 @@ public class RedirectFromWelcomePage implements Command {
         } catch (ServiceException e) {
             //TODO add redirection to err page
         }
-        response.sendRedirect("main.jsp");
+        System.out.println(request.getContextPath() + "/pages/main.jsp");
+        response.sendRedirect(request.getContextPath() + "/pages/main.jsp");
     }
 }

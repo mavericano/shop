@@ -28,15 +28,16 @@ public class SignIn implements Command {
             currentUser = service.login(email, password);
         } catch (UserNotFoundException e) {
             request.setAttribute("message", "No user with such email");
-            request.getRequestDispatcher("sign_in.jsp").forward(request, response);
+            request.getRequestDispatcher(request.getContextPath() + "/pages/sign_in.jsp").forward(request, response);
         } catch (InvalidPasswordException e) {
             request.setAttribute("message", "Invalid password");
-            request.getRequestDispatcher("sign_in.jsp").forward(request, response);
+            request.getRequestDispatcher(request.getContextPath() + "/pages/sign_in.jsp").forward(request, response);
         } catch (ServiceException e) {
             //TODO add redirection to err page
         }
         //TODO totally fix
         session.setAttribute("user", currentUser);
-        response.sendRedirect("main.jsp");
+        //
+        response.sendRedirect(request.getContextPath() + "/controller?command=VIEW_HOME_PAGE");
     }
 }

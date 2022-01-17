@@ -22,14 +22,21 @@ public class Controller extends HttpServlet {
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        setUpSession(request);
+        CommandProvider.getInstance().provideCommand(request.getParameter("command")).execute(request, response);
+        System.out.println(request.getParameter("command"));
+    }
+
+    private void setUpSession(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         if (session.getAttribute("user") == null) {
             User user = new User();
             user.setRole(4); // guest role id
             session.setAttribute("user", user);
         }
-        CommandProvider.getInstance().provideCommand(request.getParameter("command")).execute(request, response);
-        System.out.println(request.getParameter("command"));
+        if (session.getAttribute("language") == null) {
+            session.setAttribute("language", "russian");
+        }
     }
 
     public void destroy() {

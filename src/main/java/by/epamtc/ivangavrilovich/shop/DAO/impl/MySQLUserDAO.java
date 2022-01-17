@@ -15,13 +15,13 @@ public class MySQLUserDAO implements UserDAO {
     @Override
     public void addUser(User user) throws DAOException {
         Connection conn = ConnectionProvider.getInstance().takeConnection();
-        String sql = "INSERT INTO users(email,password,`default address`,role,banned) VALUES(?,?,?,?,?)";
+        String sql = "INSERT INTO users(email,password,number,role,banned) VALUES(?,?,?,?,?)";
         PreparedStatement ps = null;
         try {
             ps = conn.prepareStatement(sql);
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPassword());
-            ps.setString(3, user.getDefaultAddress());
+            ps.setString(3, user.getNumber());
             ps.setInt(4, user.getRole());
             ps.setBoolean(5, user.isBanned());
             ps.executeUpdate();
@@ -60,7 +60,7 @@ public class MySQLUserDAO implements UserDAO {
     private String buildSetExpr(User user) {
         StringJoiner sj = new StringJoiner(", ");
         sj.add("password=" + user.getPassword());
-        sj.add("`default address`=" + user.getDefaultAddress());
+        sj.add("number=" + user.getNumber());
         sj.add("role=" + user.getRole());
         sj.add("banned=" + user.isBanned());
 
@@ -117,7 +117,7 @@ public class MySQLUserDAO implements UserDAO {
         int id;
         String email;
         String password;
-        String defaultAddress;
+        String number;
         String roleName;
         int role;
         boolean banned;
@@ -129,11 +129,11 @@ public class MySQLUserDAO implements UserDAO {
                     id = rs.getInt("user_id");
                     email = rs.getString("email");
                     password = rs.getString("password");
-                    defaultAddress = rs.getString("default address");
+                    number = rs.getString("number");
                     roleName = rs.getString("name");
                     role = rs.getInt("role");
                     banned = rs.getBoolean("banned");
-                    users.add(new User(id, email, password, defaultAddress, role, roleName, banned));
+                    users.add(new User(id, email, password, number, role, roleName, banned));
                 }
             }
             rs.close();
@@ -154,7 +154,7 @@ public class MySQLUserDAO implements UserDAO {
         ResultSet rs = null;
         int id = 0;
         String password = null;
-        String defaultAddress = null;
+        String number = null;
         String roleName = null;
         int role = 0;
         boolean banned = false;
@@ -169,7 +169,7 @@ public class MySQLUserDAO implements UserDAO {
                     wasFound = true;
                     id = rs.getInt("user_id");
                     password = rs.getString("password");
-                    defaultAddress = rs.getString("default address");
+                    number = rs.getString("number");
                     roleName = rs.getString("name");
                     role = rs.getInt("role");
                     banned = rs.getBoolean("banned");
@@ -183,7 +183,7 @@ public class MySQLUserDAO implements UserDAO {
             ConnectionProvider.getInstance().returnConnection(conn);
         }
 
-        return wasFound ? new User(id, email, password, defaultAddress, role, roleName, banned) : null;
+        return wasFound ? new User(id, email, password, number, role, roleName, banned) : null;
     }
 
     @Override

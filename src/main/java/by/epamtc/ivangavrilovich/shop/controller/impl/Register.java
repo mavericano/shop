@@ -19,13 +19,13 @@ public class Register implements Command {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         //System.out.println(password);
-        String defaultAddress = request.getParameter("defaultAddress");
+        String number = request.getParameter("number");
         int role = 1;
                 //(int) request.getParameter("role");
         boolean banned = false;
                 //(boolean) request.getParameter("banned");
         try {
-            service.register(email, password, defaultAddress, role, banned);
+            service.register(email, password, number, role, banned);
         } catch (AlreadyRegisteredException e) {
             request.setAttribute("message", "User with such email already registered");
             request.getRequestDispatcher("register.jsp").forward(request, response);

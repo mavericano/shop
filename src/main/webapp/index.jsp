@@ -9,8 +9,6 @@
 
 <%--    <jsp:useBean id="name" class="_java._ee._02._servlet.usebean.SimpleBean" />--%>
 <%--    <c:set target="${name}" property="surname" value="Sidorov" />--%>
-    <c:redirect url="controller">
-        <c:param name="command" value="REDIRECT_FROM_WELCOME_PAGE"/>
-    </c:redirect>
+    <c:redirect url="controller?command=VIEW_HOME_PAGE"/>
 </body>
 </html>
