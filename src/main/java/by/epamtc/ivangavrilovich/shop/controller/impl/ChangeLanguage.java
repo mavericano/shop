@@ -10,7 +10,8 @@ import java.io.IOException;
 public class ChangeLanguage implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        request.getSession(true)
+        request.getSession(true).setAttribute("language_chosen", true);
+        request.getSession()
                 .setAttribute("language", request.getParameter("language"));
 //        System.out.println(request.getSession().getAttribute("language"));
         response.sendRedirect(request.getParameter("address"));

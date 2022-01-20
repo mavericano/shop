@@ -6,9 +6,12 @@ import by.epamtc.ivangavrilovich.shop.DAO.interfaces.ProductDAO;
 import by.epamtc.ivangavrilovich.shop.DAO.interfaces.UserDAO;
 
 public class DAOProvider {
-    private final static DAOProvider INSTANCE = new DAOProvider();
     private UserDAO userDAOImpl;
     private ProductDAO productDAOImpl;
+
+    private static class InstanceHolder {
+        private final static DAOProvider INSTANCE = new DAOProvider();
+    }
 
     private DAOProvider() {
         userDAOImpl = new MySQLUserDAO();
@@ -16,7 +19,7 @@ public class DAOProvider {
     }
 
     public static DAOProvider getInstance() {
-        return INSTANCE;
+        return InstanceHolder.INSTANCE;
     }
 
     public UserDAO getUserDAOImpl() {

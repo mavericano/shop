@@ -4,9 +4,12 @@ import by.epamtc.ivangavrilovich.shop.service.impl.UserServiceImpl;
 import by.epamtc.ivangavrilovich.shop.service.impl.UtilityServiceImpl;
 
 public class ServiceProvider {
-    private static final ServiceProvider instance = new ServiceProvider();
     private UserService userServiceImpl;
     private UtilityService utilityServiceImpl;
+
+    private final static class InstanceHolder {
+        private final static ServiceProvider INSTANCE = new ServiceProvider();
+    }
 
     private ServiceProvider() {
         userServiceImpl = new UserServiceImpl();
@@ -14,7 +17,7 @@ public class ServiceProvider {
     }
 
     public static ServiceProvider getInstance() {
-        return instance;
+        return InstanceHolder.INSTANCE;
     }
 
     public UserService getUserServiceImpl() {

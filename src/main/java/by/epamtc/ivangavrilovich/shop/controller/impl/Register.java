@@ -24,14 +24,19 @@ public class Register implements Command {
                 //(int) request.getParameter("role");
         boolean banned = false;
                 //(boolean) request.getParameter("banned");
+        boolean success = true;
         try {
             service.register(email, password, number, role, banned);
         } catch (AlreadyRegisteredException e) {
+            success = false;
             request.setAttribute("message", "User with such email already registered");
             request.getRequestDispatcher("register.jsp").forward(request, response);
         } catch (ServiceException e) {
             //TODO add redirection to err page
         }
-        response.sendRedirect("main.jsp");
+
+        if (success) {
+            request.getRequestDispatcher("/pages/controller?command=VIEW_HOME_PAGE").forward(request, response);
+        }
     }
 }

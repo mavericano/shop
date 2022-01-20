@@ -1,6 +1,6 @@
 package by.epamtc.ivangavrilovich.shop.DAO.impl;
 
-import by.epamtc.ivangavrilovich.shop.DAO.ConnectionProvider;
+import by.epamtc.ivangavrilovich.shop.DAO.ConnectionPool;
 import by.epamtc.ivangavrilovich.shop.DAO.DAOException;
 import by.epamtc.ivangavrilovich.shop.DAO.interfaces.ProductDAO;
 import by.epamtc.ivangavrilovich.shop.bean.Product;
@@ -10,10 +10,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
+
+//TODO fix type name
 public class MySQLProductDAO implements ProductDAO {
+
+    public static final String DEL = "del";
+    public static final String PRODUCT_ID_COLUMN_NAME = "product_id";
+    public static final String THUMBNAIL_COLUMN_NAME = "thumbnail";
+    public static final String NAME_COLUMN_NAME = "name";
+    public static final String PRICE_COLUMN_NAME = "price";
+    public static final String STOCK_COLUMN_NAME = "stock";
+    public static final String TYPE_COLUMN_NAME = "type";
+    public static final String TYPE_NAME_COLUMN_NAME = "'type name'";
+
     @Override
     public void addProduct(Product product) throws DAOException {
-        Connection conn = ConnectionProvider.getInstance().takeConnection();
+        Connection conn = ConnectionPool.getInstance().takeConnection();
         String sql = "INSERT INTO products(thumbnail,name,price,stock,type) VALUES(?,?,?,?,?)";
         PreparedStatement ps;
         try {
@@ -28,13 +40,13 @@ public class MySQLProductDAO implements ProductDAO {
         } catch (SQLException e) {
             throw new DAOException("Error while adding product", e);
         } finally {
-            ConnectionProvider.getInstance().returnConnection(conn);
+            ConnectionPool.getInstance().returnConnection(conn);
         }
     }
 
     @Override
     public List<Product> readProducts() throws DAOException {
-        Connection conn = ConnectionProvider.getInstance().takeConnection();
+        Connection conn = ConnectionPool.getInstance().takeConnection();
         String sql = "SELECT * FROM products JOIN types ON products.type = types.type_id";
         Statement st;
         ResultSet rs;
@@ -50,14 +62,14 @@ public class MySQLProductDAO implements ProductDAO {
             st = conn.createStatement();
             rs = st.executeQuery(sql);
             while (rs.next()) {
-                if (!rs.getBoolean("del")) {
-                    id = rs.getInt("product_id");
-                    thumbnail = rs.getString("thumbnail");
-                    name = rs.getString("name");
-                    price = rs.getFloat("price");
-                    stock = rs.getInt("stock");
-                    type = rs.getInt("type");
-                    typeName = rs.getString("type name");
+                if (!rs.getBoolean(DEL)) {
+                    id = rs.getInt(PRODUCT_ID_COLUMN_NAME);
+                    thumbnail = rs.getString(THUMBNAIL_COLUMN_NAME);
+                    name = rs.getString(NAME_COLUMN_NAME);
+                    price = rs.getFloat(PRICE_COLUMN_NAME);
+                    stock = rs.getInt(STOCK_COLUMN_NAME);
+                    type = rs.getInt(TYPE_COLUMN_NAME);
+                    typeName = rs.getString(TYPE_NAME_COLUMN_NAME);
                     products.add(new Product(id, thumbnail, name, price, stock, type, typeName));
                 }
             }
@@ -66,14 +78,14 @@ public class MySQLProductDAO implements ProductDAO {
         } catch (SQLException e) {
             throw new DAOException("Error while reading all products", e);
         } finally {
-            ConnectionProvider.getInstance().returnConnection(conn);
+            ConnectionPool.getInstance().returnConnection(conn);
         }
         return products;
     }
 
     @Override
     public boolean modifyDelStatus(Product product, boolean newStatus) throws DAOException {
-        Connection conn = ConnectionProvider.getInstance().takeConnection();
+        Connection conn = ConnectionPool.getInstance().takeConnection();
         String sql = "UPDATE products SET del=? WHERE product_id = ?";
         PreparedStatement ps;
         try {
@@ -85,25 +97,26 @@ public class MySQLProductDAO implements ProductDAO {
         } catch (SQLException e) {
             throw new DAOException("Error while modifying product del status", e);
         } finally {
-            ConnectionProvider.getInstance().returnConnection(conn);
+            ConnectionPool.getInstance().returnConnection(conn);
         }
         return false;
     }
 
+    //TODO add =
     private String buildSetExpr(Product product) {
         StringJoiner sj = new StringJoiner(", ");
-        sj.add("thumbnail=" + product.getThumbnail());
-        sj.add("name=" + product.getName());
-        sj.add("price=" + product.getPrice());
-        sj.add("stock=" + product.getStock());
-        sj.add("type=" + product.getType());
+        sj.add(THUMBNAIL_COLUMN_NAME + "=" + product.getThumbnail());
+        sj.add(NAME_COLUMN_NAME + "=" + product.getName());
+        sj.add(PRICE_COLUMN_NAME + "=" + product.getPrice());
+        sj.add(STOCK_COLUMN_NAME + "=" + product.getStock());
+        sj.add(TYPE_COLUMN_NAME + "=" + product.getType());
 
         return sj.setEmptyValue("").toString();
     }
 
     @Override
     public boolean updateProduct(Product product) throws DAOException {
-        Connection conn = ConnectionProvider.getInstance().takeConnection();
+        Connection conn = ConnectionPool.getInstance().takeConnection();
         String setExpr = buildSetExpr(product);
         String sql = "UPDATE products SET " +
                 setExpr +
@@ -117,14 +130,14 @@ public class MySQLProductDAO implements ProductDAO {
         } catch (SQLException e) {
             throw new DAOException("Error while updating product", e);
         } finally {
-            ConnectionProvider.getInstance().returnConnection(conn);
+            ConnectionPool.getInstance().returnConnection(conn);
         }
         return false;
     }
 
     @Override
     public List<Product> findPopularProducts(int amount) throws DAOException {
-        Connection conn = ConnectionProvider.getInstance().takeConnection();
+        Connection conn = ConnectionPool.getInstance().takeConnection();
         String sql = "SELECT * FROM products JOIN types ON products.type = types.type_id ORDER BY `times ordered` DESC";
         Statement st;
         ResultSet rs;
@@ -141,14 +154,14 @@ public class MySQLProductDAO implements ProductDAO {
             st = conn.createStatement();
             rs = st.executeQuery(sql);
             while (rs.next() && i <= amount) {
-                if (!rs.getBoolean("del")) {
-                    id = rs.getInt("product_id");
-                    thumbnail = rs.getString("thumbnail");
-                    name = rs.getString("name");
-                    price = rs.getFloat("price");
-                    stock = rs.getInt("stock");
-                    type = rs.getInt("type");
-                    typeName = rs.getString("type name");
+                if (!rs.getBoolean(DEL)) {
+                    id = rs.getInt(PRODUCT_ID_COLUMN_NAME);
+                    thumbnail = rs.getString(THUMBNAIL_COLUMN_NAME);
+                    name = rs.getString(NAME_COLUMN_NAME);
+                    price = rs.getFloat(PRICE_COLUMN_NAME);
+                    stock = rs.getInt(STOCK_COLUMN_NAME);
+                    type = rs.getInt(TYPE_COLUMN_NAME);
+                    typeName = rs.getString(TYPE_NAME_COLUMN_NAME);
                     products.add(new Product(id, thumbnail, name, price, stock, type, typeName));
                     i++;
                 }
@@ -158,7 +171,7 @@ public class MySQLProductDAO implements ProductDAO {
         } catch (SQLException e) {
             throw new DAOException(String.format("Error while reading %d popular products", amount), e);
         } finally {
-            ConnectionProvider.getInstance().returnConnection(conn);
+            ConnectionPool.getInstance().returnConnection(conn);
         }
         return products;
     }

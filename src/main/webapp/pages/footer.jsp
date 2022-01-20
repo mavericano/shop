@@ -1,28 +1,4 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: haiku
-  Date: 14.01.2022
-  Time: 20:50
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-    <link rel="stylesheet" href="../resources/styles/main.css" type="text/css">
-    <link rel="stylesheet" href="../resources/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bitter:400,700">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cookie">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700">
-    <link rel="stylesheet" href="../resources/assets/fonts/font-awesome.min.css">
-    <link rel="stylesheet" href="../resources/assets/fonts/ionicons.min.css">
-    <link rel="stylesheet" href="../resources/assets/css/Footer-Clean.css">
-    <link rel="stylesheet" href="../resources/assets/css/Footer-Dark.css">
-    <link rel="stylesheet" href="../resources/assets/css/Header-Blue.css">
-    <link rel="stylesheet" href="../resources/assets/css/Header-Dark.css">
-    <link rel="stylesheet" href="../resources/assets/css/Pretty-Header.css">
-    <link rel="stylesheet" href="../resources/assets/css/styles.css">
-</head>
-<body>
 <div class="footer-clean" style="background-color: #5b5b5b;color: white;">
     <footer>
         <div class="container">
@@ -60,5 +36,3 @@
 </div>
 <script src="../resources/assets/js/jquery.min.js"></script>
 <script src="../resources/assets/bootstrap/js/bootstrap.min.js"></script>
-</body>
-</html>

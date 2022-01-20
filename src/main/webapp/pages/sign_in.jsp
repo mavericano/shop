@@ -30,7 +30,7 @@
 <%--    </form>--%>
 
     <div id="login-one" class="login-one" style="height: auto">
-        <form class="login-one-form" action="${pageContext.request.contextPath}/controller?command=SIGN_IN" method="POST">
+        <form class="login-one-form" action="${pageContext.request.contextPath}/pages/controller?command=SIGN_IN" method="POST">
             <div class="col">
                 <div class="login-one-ico"><i class="fa fa-unlock-alt" id="lockico" style="color: rgb(38, 157, 157);"></i></div>
                 <div class="form-group">
@@ -40,7 +40,10 @@
                     <input type="text" class="form-control" name="email" placeholder="Email" />
                     <input type="password" class="form-control" name="password" placeholder="Password" />
                     <button class="btn btn-primary" id="button" style="background-color: rgb(38, 157, 157); margin-top: 10px;" type="submit">Log in</button>
-                    <button class="btn btn-primary" id="button" href="${pageContext.request.contextPath}/controller?command=VIEW_HOME_PAGE" style="background-color: rgb(255, 255, 255); margin-top: 10px; color: rgb(0, 0, 0)" >Cancel</button>
+                    <a class="btn btn-primary" id="button" href="${pageContext.request.contextPath}/pages/controller?command=VIEW_HOME_PAGE" style="background-color: rgb(255, 255, 255); margin-top: 10px; color: rgb(0, 0, 0)" >Cancel</a>
+                    <a style="color: salmon; font-size: 12px;">
+                        <c:out value="${requestScope.message}"/>
+                    </a>
                 </div>
             </div>
         </form>

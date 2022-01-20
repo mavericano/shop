@@ -5,6 +5,8 @@ import by.epamtc.ivangavrilovich.shop.controller.Command;
 import by.epamtc.ivangavrilovich.shop.service.ServiceProvider;
 import by.epamtc.ivangavrilovich.shop.service.UtilityService;
 import by.epamtc.ivangavrilovich.shop.service.exceptions.ServiceException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +15,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class ViewHomePage implements Command {
+    private final static Logger logger = LogManager.getLogger();
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         UtilityService service = ServiceProvider.getInstance().getUtilityServiceImpl();
@@ -20,9 +23,9 @@ public class ViewHomePage implements Command {
             List<Product> products = service.findPopularProducts(3);
             request.getSession(true).setAttribute("popularProducts", products);
         } catch (ServiceException e) {
+            logger.error("Error while redirecting to home page", e);
             //TODO add redirection to err page
         }
-        System.out.println(request.getContextPath() + "/pages/main.jsp");
         response.sendRedirect(request.getContextPath() + "/pages/main.jsp");
     }
 }

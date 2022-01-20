@@ -1,12 +1,16 @@
 package by.epamtc.ivangavrilovich.shop.controller;
 
+import by.epamtc.ivangavrilovich.shop.DAO.DAOProvider;
 import by.epamtc.ivangavrilovich.shop.controller.impl.*;
 
 import java.util.HashMap;
 
 public class CommandProvider {
     private final HashMap<String, Command> commands = new HashMap<>();
-    private final static CommandProvider instance = new CommandProvider();
+
+    private static class InstanceHolder {
+        private final static CommandProvider INSTANCE = new CommandProvider();
+    }
 
     private CommandProvider(){
         commands.put("SIGN_IN", new SignIn());
@@ -18,7 +22,7 @@ public class CommandProvider {
     }
 
     public static CommandProvider getInstance() {
-        return instance;
+        return InstanceHolder.INSTANCE;
     }
 
     public Command provideCommand(String name) {

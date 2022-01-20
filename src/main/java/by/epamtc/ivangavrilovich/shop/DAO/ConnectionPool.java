@@ -1,14 +1,26 @@
 package by.epamtc.ivangavrilovich.shop.DAO;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.Properties;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class ConnectionProvider {
-    private static final ConnectionProvider instance = new ConnectionProvider();
+public class ConnectionPool {
+    private static final Logger logger = LogManager.getLogger();
+    private final String DRIVER_NAME = "driverName";
+    private final String PROPERTY_FILE_NAME = "db.properties";
+    private final String URL_PROPERTY = "url";
+    private final String USER_PROPERTY = "user";
+    private final String PASSWORD_PROPERTY = "password";
+    private final String POOL_SIZE_PROPERTY = "poolSize";
+    private final int DEFAULT_POOL_SIZE = 5;
     private String driverName;
     private String url;
     private String user;
@@ -16,28 +28,36 @@ public class ConnectionProvider {
     private int poolSize;
     private BlockingQueue<Connection> givenConnections;
     private BlockingQueue<Connection> freeConnections;
+    private final Lock lock = new ReentrantLock();
 
-    public static ConnectionProvider getInstance() {
-        return instance;
+    private static class InstanceHolder {
+        private final static ConnectionPool INSTANCE = new ConnectionPool();
     }
 
-    private ConnectionProvider() {
+    public static ConnectionPool getInstance() {
+        return InstanceHolder.INSTANCE;
+    }
+
+    //TODO move init to controller or listeners and why
+    private ConnectionPool() {
         //ResourceBundle bundle = ResourceBundle.getBundle("db.properties", new Locale("en", "US"));
-        InputStream a = this.getClass().getClassLoader().getResourceAsStream("db.properties");
+        InputStream a = this.getClass().getClassLoader().getResourceAsStream(PROPERTY_FILE_NAME);
         Properties properties = new Properties();
         try {
             properties.load(a);
         } catch (IOException e) {
+            logger.error("Error loading property files for database. Name for the file should be \"db.properties\"", e);
             throw new ConnectionPoolException("Error loading property files for database. Name for the file should be \"db.properties\"", e);
         }
-        this.driverName = properties.getProperty("driverName");
-        this.url = properties.getProperty("url");
-        this.user = properties.getProperty("user");
-        this.password = properties.getProperty("password");
+        this.driverName = properties.getProperty(DRIVER_NAME);
+        this.url = properties.getProperty(URL_PROPERTY);
+        this.user = properties.getProperty(USER_PROPERTY);
+        this.password = properties.getProperty(PASSWORD_PROPERTY);
         try {
-            this.poolSize = Integer.parseInt(properties.getProperty("poolSize"));
+            this.poolSize = Integer.parseInt(properties.getProperty(POOL_SIZE_PROPERTY));
         } catch (NumberFormatException e) {
-            this.poolSize = 5;
+            logger.debug("Poolsize was set to default value");
+            this.poolSize = DEFAULT_POOL_SIZE;
         }
 
         try {
@@ -46,12 +66,13 @@ public class ConnectionProvider {
             freeConnections = new ArrayBlockingQueue<>(poolSize);
             for (int i = 0; i < poolSize; i++) {
                 Connection connection = DriverManager.getConnection(url, user, password);
-                //PooledConnection pooledConnection = new PooledConnection(connection);
                 freeConnections.add(connection);
             }
         } catch (SQLException e) {
+            logger.error("SQLException in ConnectionPool", e);
             throw new ConnectionPoolException("SQLException in ConnectionPool", e);
         } catch (ClassNotFoundException e) {
+            logger.error("Can't find database driver class", e);
             throw new ConnectionPoolException("Can't find database driver class", e);
         }
     }
@@ -65,7 +86,7 @@ public class ConnectionProvider {
             closeConnectionsQueue(givenConnections);
             closeConnectionsQueue(freeConnections);
         } catch (SQLException e) {
-//            logger.log(Level.ERROR, "Error closing the connection.", e);
+            logger.error("Error clearing connection queues", e);
         }
     }
     public Connection takeConnection() throws ConnectionPoolException {
@@ -74,14 +95,17 @@ public class ConnectionProvider {
             connection = freeConnections.take();
             givenConnections.add(connection);
         } catch (InterruptedException e) {
+            logger.error("Error connecting to the data source.", e);
             throw new ConnectionPoolException("Error connecting to the data source.", e);
         }
         return connection;
     }
 
     public void returnConnection(Connection connection) {
-        givenConnections.remove(connection);
-        freeConnections.add(connection);
+        lock.lock();
+            givenConnections.remove(connection);
+            freeConnections.add(connection);
+        lock.unlock();
     }
 
     public void closeConnection(Connection con, Statement st, ResultSet rs) {

@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface UtilityService {
     void clearConnectionPool();
-
+    void initConnectionPool();
     List<Product> findPopularProducts(int amount) throws ServiceException;
 }
