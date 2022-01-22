@@ -52,32 +52,27 @@
                             </c:choose>
                         </a>
                     </form>
-                    <c:if test="${empty sessionScope.user}">
-                        <jsp:useBean id="user" class="by.epamtc.ivangavrilovich.shop.bean.User" scope="session"/>
-                        <c:set target="${user}" property="role" value="${4}"/>
-                    </c:if>
                     <c:choose>
                         <c:when test="${sessionScope.user.role == 4}">
                             <span class="navbar-text">
-                                <a class="login" href="sign_in.jsp">Sign in</a>
-<%--                                ${sessionScope.logInLabel}--%>
+                                <a class="login" href="sign_in.jsp">${sessionScope.logInLabel}</a>
                             </span>
-                            <a class="btn btn-light action-button" role="button" href="register.jsp">Sign up</a>
-<%--                            ${sessionScope.registerLabel}--%>
+                            <a class="btn btn-light action-button" role="button" href="register.jsp">${sessionScope.registerLabel}</a>
                         </c:when>
                         <c:when test="${sessionScope.user.role == 3}">
+<%--                            TODO i18n--%>
+                            <a class="btn btn-light action-button" role="button" style="color: red; background: transparent; border: 1px solid red;" href="${pageContext.request.contextPath}/pages/controller?command=SIGN_OUT">Sign out</a>
                             <c:out value="admin"/>
                         </c:when>
                         <c:when test="${sessionScope.user.role == 2}">
+                            <a class="btn btn-light action-button" role="button" style="color: red; background: transparent; border: 1px solid red;" href="${pageContext.request.contextPath}/pages/controller?command=SIGN_OUT">Sign out</a>
                             <c:out value="courier"/>
                         </c:when>
                         <c:when test="${sessionScope.user.role == 1}">
+                            <a class="btn btn-danger action-button" role="button" style="color: red; background: transparent; border: 1px solid red;" href="${pageContext.request.contextPath}/pages/controller?command=SIGN_OUT">Sign out</a>
                             <c:out value="basic user"/>
                         </c:when>
                     </c:choose>
-                    <%--                    <c:out value="${sessionScope.user.role}"/>--%>
-                    <%--                    TODO remove--%>
-                    <%--                    <span class="navbar-text"><a class="login" href="sign_in.jsp">Log In</a></span><a class="btn btn-light action-button" role="button" href="register.jsp">Sign Up</a>--%>
                 </div>
             </div>
         </nav>

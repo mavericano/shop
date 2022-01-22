@@ -1,6 +1,6 @@
 package by.epamtc.ivangavrilovich.shop.controller.filters;
 
-import by.epamtc.ivangavrilovich.shop.bean.User;
+import by.epamtc.ivangavrilovich.shop.service.ServiceProvider;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -15,11 +15,11 @@ public class SessionFilter implements Filter {
         HttpSession session = req.getSession(true);
         Locale locale;
         if (!(boolean)session.getAttribute("language_chosen")) {
+            System.out.println("detecting");
             //TODO replace with props
             List<Locale> supportedLocales = new ArrayList<>();
             supportedLocales.add(Locale.US);
             supportedLocales.add(new Locale("ru", "RU"));
-            //supportedLocales.add(new Locale("en", "GB"));
             boolean foundSupported = false;
 
             locale = null;
@@ -27,7 +27,6 @@ public class SessionFilter implements Filter {
             while (locales.hasMoreElements() && (!foundSupported)) {
                 locale = locales.nextElement();
                 if (supportedLocales.contains(locale)) {
-                    session.setAttribute("language", locale);
                     foundSupported = true;
                 }
             }
@@ -36,22 +35,9 @@ public class SessionFilter implements Filter {
                 locale = Locale.US;
             }
 
-            System.out.println(locale);
-
-            //TODO add locale detection
-            //this.getClass().getResource("text.properties");
-        } else {
-            String lang = ((String)session.getAttribute("language")).substring(0, 2);
-            String country = ((String)session.getAttribute("language")).substring(3, 5);
-            locale = new Locale(lang, country);
-        }
-
-        ResourceBundle bundle = ResourceBundle.getBundle("bundles/text", locale);
-
-        for (Enumeration<String> e = bundle.getKeys(); e.hasMoreElements();) {
-            String key = e.nextElement();
-            String s = bundle.getString(key);
-            session.setAttribute(key, s);
+            session.setAttribute("language", locale.toString());
+            session.setAttribute("language_chosen", true);
+            ServiceProvider.getInstance().getUtilityServiceImpl().updateLocaleInSession(session, locale);
         }
 
         chain.doFilter(request, response);

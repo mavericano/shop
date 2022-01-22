@@ -24,7 +24,7 @@ public class ViewHomePage implements Command {
             request.getSession(true).setAttribute("popularProducts", products);
         } catch (ServiceException e) {
             logger.error("Error while redirecting to home page", e);
-            //TODO add redirection to err page
+            response.sendRedirect(request.getContextPath() + "/pages/serverException.jsp");
         }
         response.sendRedirect(request.getContextPath() + "/pages/main.jsp");
     }

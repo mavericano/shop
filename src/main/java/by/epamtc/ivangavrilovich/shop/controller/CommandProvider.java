@@ -14,6 +14,7 @@ public class CommandProvider {
 
     private CommandProvider(){
         commands.put("SIGN_IN", new SignIn());
+        commands.put("SIGN_OUT", new SignOut());
         commands.put("REGISTER", new Register());
         commands.put("VIEW_HOME_PAGE", new ViewHomePage());
         commands.put("VIEW_ALL_PRODUCTS", new ViewAllProducts());

@@ -8,6 +8,8 @@ import by.epamtc.ivangavrilovich.shop.service.exceptions.ServiceException;
 import by.epamtc.ivangavrilovich.shop.service.ServiceProvider;
 import by.epamtc.ivangavrilovich.shop.service.UserService;
 import by.epamtc.ivangavrilovich.shop.service.exceptions.UserNotFoundException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class SignIn implements Command {
+    private final static Logger logger = LogManager.getLogger();
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
@@ -26,22 +29,17 @@ public class SignIn implements Command {
 
         try {
             currentUser = service.login(email, password);
+            session.setAttribute("user", currentUser);
+            request.getRequestDispatcher("/pages/controller?command=VIEW_HOME_PAGE").forward(request, response);
         } catch (UserNotFoundException e) {
             request.setAttribute("message", "No user with such email");
-//            response.sendRedirect(request.getContextPath() + "/pages/sign_in.jsp");
             request.getRequestDispatcher("sign_in.jsp").forward(request, response);
         } catch (InvalidPasswordException e) {
             request.setAttribute("message", "Invalid password");
-//            response.sendRedirect(request.getContextPath() + "/pages/sign_in.jsp");
             request.getRequestDispatcher("sign_in.jsp").forward(request, response);
         } catch (ServiceException e) {
-            //TODO add redirection to err page
+            logger.error("Error while signing in");
+            response.sendRedirect(request.getContextPath() + "/pages/serverException.jsp");
         }
-        //TODO totally fix
-        if (currentUser != null) {
-            session.setAttribute("user", currentUser);
-            request.getRequestDispatcher("/pages/controller?command=VIEW_HOME_PAGE").forward(request, response);
-        }
-//        response.sendRedirect(request.getContextPath() + "/controller?command=VIEW_HOME_PAGE");
     }
 }

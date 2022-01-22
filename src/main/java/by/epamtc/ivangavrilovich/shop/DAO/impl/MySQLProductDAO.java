@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
-
-//TODO fix type name
+//TODO add log
 public class MySQLProductDAO implements ProductDAO {
 
     public static final String DEL = "del";
@@ -21,7 +20,72 @@ public class MySQLProductDAO implements ProductDAO {
     public static final String PRICE_COLUMN_NAME = "price";
     public static final String STOCK_COLUMN_NAME = "stock";
     public static final String TYPE_COLUMN_NAME = "type";
-    public static final String TYPE_NAME_COLUMN_NAME = "'type name'";
+    public static final String TYPE_NAME_COLUMN_NAME = "type name";
+
+    @Override
+    public int numberOfProducts() throws DAOException {
+        Connection conn = ConnectionPool.getInstance().takeConnection();
+        String sql = "SELECT count(*) FROM products JOIN types ON products.type = types.type_id WHERE del=0";
+        int numberOfProducts;
+        Statement st;
+        ResultSet rs;
+        try {
+            st = conn.createStatement();
+            rs = st.executeQuery(sql);
+
+            if (rs.next()) {
+                numberOfProducts = rs.getInt(1);
+            } else {
+                throw new DAOException("Result set for number of products is empty");
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Error while reading number of products", e);
+        } finally {
+            ConnectionPool.getInstance().returnConnection(conn);
+        }
+
+        return numberOfProducts;
+    }
+
+    @Override
+    public List<Product> viewPageProducts(int offset, int recsPerPage) throws DAOException {
+        Connection conn = ConnectionPool.getInstance().takeConnection();
+        String sql = "SELECT * FROM products JOIN types ON products.type = types.type_id WHERE del=0 ORDER BY product_id LIMIT ? OFFSET ?";
+        PreparedStatement ps;
+        ResultSet rs;
+        int id;
+        String thumbnail;
+        String name;
+        double price;
+        int stock;
+        int type;
+        String typeName;
+        List<Product> products = new ArrayList<>();
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, recsPerPage);
+            ps.setInt(2, offset);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                id = rs.getInt(PRODUCT_ID_COLUMN_NAME);
+                thumbnail = rs.getString(THUMBNAIL_COLUMN_NAME);
+                name = rs.getString(NAME_COLUMN_NAME);
+                price = rs.getFloat(PRICE_COLUMN_NAME);
+                stock = rs.getInt(STOCK_COLUMN_NAME);
+                type = rs.getInt(TYPE_COLUMN_NAME);
+                typeName = rs.getString(TYPE_NAME_COLUMN_NAME);
+                products.add(new Product(id, thumbnail, name, price, stock, type, typeName));
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            throw new DAOException(String.format("Error while reading page products for offset %d recsPerPage %d", offset, recsPerPage), e);
+        } finally {
+            ConnectionPool.getInstance().returnConnection(conn);
+        }
+
+        return products;
+    }
 
     @Override
     public void addProduct(Product product) throws DAOException {
@@ -44,6 +108,7 @@ public class MySQLProductDAO implements ProductDAO {
         }
     }
 
+    //TODO fix del
     @Override
     public List<Product> readProducts() throws DAOException {
         Connection conn = ConnectionPool.getInstance().takeConnection();
@@ -102,7 +167,6 @@ public class MySQLProductDAO implements ProductDAO {
         return false;
     }
 
-    //TODO add =
     private String buildSetExpr(Product product) {
         StringJoiner sj = new StringJoiner(", ");
         sj.add(THUMBNAIL_COLUMN_NAME + "=" + product.getThumbnail());

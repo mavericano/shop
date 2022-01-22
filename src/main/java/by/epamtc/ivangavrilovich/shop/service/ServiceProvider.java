@@ -1,11 +1,13 @@
 package by.epamtc.ivangavrilovich.shop.service;
 
+import by.epamtc.ivangavrilovich.shop.service.impl.ProductServiceImpl;
 import by.epamtc.ivangavrilovich.shop.service.impl.UserServiceImpl;
 import by.epamtc.ivangavrilovich.shop.service.impl.UtilityServiceImpl;
 
 public class ServiceProvider {
     private UserService userServiceImpl;
     private UtilityService utilityServiceImpl;
+    private ProductService productServiceImpl;
 
     private final static class InstanceHolder {
         private final static ServiceProvider INSTANCE = new ServiceProvider();
@@ -14,6 +16,7 @@ public class ServiceProvider {
     private ServiceProvider() {
         userServiceImpl = new UserServiceImpl();
         utilityServiceImpl = new UtilityServiceImpl();
+        productServiceImpl = new ProductServiceImpl();
     }
 
     public static ServiceProvider getInstance() {
@@ -34,5 +37,13 @@ public class ServiceProvider {
 
     public void setUtilityServiceImpl(UtilityService utilityServiceImpl) {
         this.utilityServiceImpl = utilityServiceImpl;
+    }
+
+    public ProductService getProductServiceImpl() {
+        return productServiceImpl;
+    }
+
+    public void setProductServiceImpl(ProductService productServiceImpl) {
+        this.productServiceImpl = productServiceImpl;
     }
 }

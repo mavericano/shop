@@ -25,11 +25,8 @@ public class Controller extends HttpServlet {
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        //TODO remove
-        //request.getRequestDispatcher("errorPage.jsp").forward(request, response);
-        System.out.println(request.getParameter("command"));
         CommandProvider.getInstance().provideCommand(request.getParameter("command")).execute(request, response);
-        logger.debug(request.getParameter("command"));
+        logger.info(request.getParameter("command"));
     }
 
     public void destroy() {

@@ -77,25 +77,6 @@ public class MySQLUserDAO implements UserDAO {
         return sj.setEmptyValue("").toString();
     }
 
-//    private boolean toChangeBanState(int userId, boolean newState, Connection conn) {
-//        String sql = "SELECT banned FROM users WHERE user_id=?";
-//        PreparedStatement ps = null;
-//        ResultSet rs = null;
-//        boolean ret = false;
-//        try {
-//            ps = conn.prepareStatement(sql);
-//            ps.setInt(1, userId);
-//            rs = ps.executeQuery();
-//            ret = newState != rs.getBoolean("banned");
-//            rs.close();
-//            ps.close();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            //TODO fix
-//        }
-//        return ret;
-//    }
-
     @Override
     public boolean updateUser(User user) throws DAOException {
         Connection conn = ConnectionPool.getInstance().takeConnection();

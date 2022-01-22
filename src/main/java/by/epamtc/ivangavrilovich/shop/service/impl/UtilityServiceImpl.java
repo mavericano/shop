@@ -7,7 +7,11 @@ import by.epamtc.ivangavrilovich.shop.bean.Product;
 import by.epamtc.ivangavrilovich.shop.service.UtilityService;
 import by.epamtc.ivangavrilovich.shop.service.exceptions.ServiceException;
 
+import javax.servlet.http.HttpSession;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class UtilityServiceImpl implements UtilityService {
     @Override
@@ -21,6 +25,17 @@ public class UtilityServiceImpl implements UtilityService {
             return DAOProvider.getInstance().getProductDAOImpl().findPopularProducts(amount);
         } catch (DAOException e) {
             throw new ServiceException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void updateLocaleInSession(HttpSession session, Locale locale) {
+        ResourceBundle bundle = ResourceBundle.getBundle("bundles/text", locale);
+
+        for (Enumeration<String> e = bundle.getKeys(); e.hasMoreElements();) {
+            String key = e.nextElement();
+            String s = bundle.getString(key);
+            session.setAttribute(key, s);
         }
     }
 
