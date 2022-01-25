@@ -17,4 +17,6 @@ public interface ProductDAO {
     boolean updateProduct(Product product) throws DAOException;
 
     List<Product> findPopularProducts(int amount) throws DAOException;
+
+    Product retrieveProductById(int id) throws DAOException;
 }

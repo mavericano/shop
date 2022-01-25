@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
+//TODO remove format
 public class MySQLUserDAO implements UserDAO {
 
     public static final String PASSWORD_COLUMN_NAME = "password";
@@ -20,7 +21,7 @@ public class MySQLUserDAO implements UserDAO {
     public static final String USER_ID_COLUMN_NAME = "user_id";
     public static final String EMAIL_COLUMN_NAME = "email";
     public static final String ROLE_NAME_COLUMN_NAME = "name";
-    public static final String DEL = "del";
+//    public static final String DEL = "del";
 
     @Override
     public void addUser(User user) throws DAOException {
@@ -101,7 +102,7 @@ public class MySQLUserDAO implements UserDAO {
     @Override
     public List<User> readUsers() throws DAOException {
         Connection conn = ConnectionPool.getInstance().takeConnection();
-        String sql = "SELECT * FROM users JOIN roles ON users.role = roles.role_id";
+        String sql = "SELECT * FROM users JOIN roles ON users.role = roles.role_id WHERE del=0";
         Statement st;
         ResultSet rs;
         List<User> users = new ArrayList<>();
@@ -116,16 +117,14 @@ public class MySQLUserDAO implements UserDAO {
             st = conn.createStatement();
             rs = st.executeQuery(sql);
             while (rs.next()) {
-                if (!rs.getBoolean(DEL)) {
-                    id = rs.getInt(USER_ID_COLUMN_NAME);
-                    email = rs.getString(EMAIL_COLUMN_NAME);
-                    password = rs.getString(PASSWORD_COLUMN_NAME);
-                    number = rs.getString(NUMBER_COLUMN_NAME);
-                    roleName = rs.getString(ROLE_NAME_COLUMN_NAME);
-                    role = rs.getInt(ROLE_COLUMN_NAME);
-                    banned = rs.getBoolean(BANNED_COLUMN_NAME);
-                    users.add(new User(id, email, password, number, role, roleName, banned));
-                }
+                id = rs.getInt(USER_ID_COLUMN_NAME);
+                email = rs.getString(EMAIL_COLUMN_NAME);
+                password = rs.getString(PASSWORD_COLUMN_NAME);
+                number = rs.getString(NUMBER_COLUMN_NAME);
+                roleName = rs.getString(ROLE_NAME_COLUMN_NAME);
+                role = rs.getInt(ROLE_COLUMN_NAME);
+                banned = rs.getBoolean(BANNED_COLUMN_NAME);
+                users.add(new User(id, email, password, number, role, roleName, banned));
             }
             rs.close();
             st.close();
@@ -140,7 +139,7 @@ public class MySQLUserDAO implements UserDAO {
     @Override
     public User readUserByEmail(String email) throws DAOException {
         Connection conn = ConnectionPool.getInstance().takeConnection();
-        String sql = String.format("SELECT * FROM users JOIN roles ON users.role = roles.role_id WHERE email='%s'", email);
+        String sql = String.format("SELECT * FROM users JOIN roles ON users.role = roles.role_id WHERE email='%s' and del=0", email);
         Statement st;
         ResultSet rs = null;
         int id = 0;
@@ -155,16 +154,13 @@ public class MySQLUserDAO implements UserDAO {
             st = conn.createStatement();
             rs = st.executeQuery(sql);
             if (rs.next()) {
-                del = rs.getBoolean(DEL);
-                if (!del) {
-                    wasFound = true;
-                    id = rs.getInt(USER_ID_COLUMN_NAME);
-                    password = rs.getString(PASSWORD_COLUMN_NAME);
-                    number = rs.getString(NUMBER_COLUMN_NAME);
-                    roleName = rs.getString(ROLE_NAME_COLUMN_NAME);
-                    role = rs.getInt(ROLE);
-                    banned = rs.getBoolean(BANNED_COLUMN_NAME);
-                }
+                wasFound = true;
+                id = rs.getInt(USER_ID_COLUMN_NAME);
+                password = rs.getString(PASSWORD_COLUMN_NAME);
+                number = rs.getString(NUMBER_COLUMN_NAME);
+                roleName = rs.getString(ROLE_NAME_COLUMN_NAME);
+                role = rs.getInt(ROLE);
+                banned = rs.getBoolean(BANNED_COLUMN_NAME);
             }
             rs.close();
             st.close();
@@ -180,7 +176,7 @@ public class MySQLUserDAO implements UserDAO {
     @Override
     public boolean hasUserWithEmail(String email) throws DAOException {
         Connection conn = ConnectionPool.getInstance().takeConnection();
-        String sql = String.format("SELECT email FROM users WHERE email='%s'", email);
+        String sql = String.format("SELECT email FROM users WHERE email='%s' and del=0", email);
         Statement st;
         ResultSet rs;
         boolean result = false;
@@ -188,8 +184,7 @@ public class MySQLUserDAO implements UserDAO {
             st = conn.createStatement();
             rs = st.executeQuery(sql);
             if (rs.next())
-                if (!rs.getBoolean(DEL))
-                    result = true;
+                result = true;
             rs.close();
             st.close();
         } catch (SQLException e) {

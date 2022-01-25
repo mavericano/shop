@@ -22,10 +22,8 @@ public class ChangeLanguage implements Command {
 
         ServiceProvider.getInstance().getUtilityServiceImpl().updateLocaleInSession(session, locale);
 
-        String address = request.getParameter("address").substring(1);
-        address = address.substring(address.indexOf("/"));
-        request.getRequestDispatcher(
-                address)
+        request.getRequestDispatcher("/pages/controller?" +
+                    request.getSession(true).getAttribute("lastAction"))
                         .forward(request, response);
     }
 }

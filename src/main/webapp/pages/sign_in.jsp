@@ -3,6 +3,7 @@
 <html>
 <head>
     <title>Sign in</title>
+    <script defer src="validateOnRegister.js"></script>
     <link rel="stylesheet" href="../resources/assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bitter:400,700">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cookie">
@@ -19,55 +20,24 @@
 
 </head>
 <body>
-<%--    <form class="form-sign-in" action="controller" method="POST">--%>
-<%--        <c:out value="${requestScope.message}"/><br/>--%>
-<%--        <input type="hidden" name="command" value="SIGN_IN"/><br/>--%>
-<%--        <label for="email">Email:</label>--%>
-<%--        <input id="email" type="text" name="email"/><br/>--%>
-<%--        <label for="password">Password:</label>--%>
-<%--        <input id="password" type="password" name="password"/>--%>
-<%--        <input type="submit" value="Sign in"/>--%>
-<%--    </form>--%>
-
     <div id="login-one" class="login-one" style="height: auto">
-        <form class="login-one-form" action="${pageContext.request.contextPath}/pages/controller?command=SIGN_IN" method="POST">
+        <form id="form" class="login-one-form" action="${pageContext.request.contextPath}/pages/controller?command=SIGN_IN" method="POST">
             <div class="col">
                 <div class="login-one-ico"><i class="fa fa-unlock-alt" id="lockico" style="color: rgb(38, 157, 157);"></i></div>
                 <div class="form-group">
                     <div>
                         <h3 id="heading">Log in:</h3>
                     </div>
-                    <input type="text" class="form-control" name="email" placeholder="Email" />
-                    <input type="password" class="form-control" name="password" placeholder="Password" />
+                    <input type="text" class="form-control" name="email" id="email" placeholder="Email" />
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Password" />
                     <button class="btn btn-primary" id="button" style="background-color: rgb(38, 157, 157); margin-top: 10px;" type="submit">Log in</button>
                     <a class="btn btn-primary" id="button" href="${pageContext.request.contextPath}/pages/controller?command=VIEW_HOME_PAGE" style="background-color: rgb(255, 255, 255); margin-top: 10px; color: rgb(0, 0, 0)" >Cancel</a>
-                    <a style="color: salmon; font-size: 12px;">
+                    <a id="error" style="color: salmon; font-size: 12px;">
                         <c:out value="${requestScope.message}"/>
                     </a>
                 </div>
             </div>
         </form>
     </div>
-
-<%--    <div class="login">--%>
-<%--        <div class="heading">--%>
-<%--            <h2>Sign in</h2>--%>
-<%--            <form action="controller">--%>
-<%--                <c:out value="${requestScope.message}"/><br/>--%>
-<%--                <input type="hidden" name="command" value="SIGN_IN"/><br/>--%>
-<%--                <div class="input-group input-group-lg">--%>
-<%--                    <span class="input-group-addon"><i class="fa fa-user"></i></span>--%>
-<%--                    <input type="text" class="form-control" placeholder="Username or email" name="email">--%>
-<%--                </div>--%>
-
-<%--                <div class="input-group input-group-lg">--%>
-<%--                    <span class="input-group-addon"><i class="fa fa-lock"></i></span>--%>
-<%--                    <input type="password" class="form-control" placeholder="Password" name="password">--%>
-<%--                </div>--%>
-
-<%--                <button type="submit" class="float">Login</button>--%>
-<%--            </form>--%>
-<%--        </div>--%>
-<%--    </div>--%>
 </body>
 </html>

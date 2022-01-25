@@ -10,8 +10,11 @@ import by.epamtc.ivangavrilovich.shop.service.exceptions.UserNotFoundException;
 import by.epamtc.ivangavrilovich.shop.service.exceptions.ServiceException;
 import by.epamtc.ivangavrilovich.shop.service.UserService;
 import by.epamtc.ivangavrilovich.shop.service.hashing.Hasher;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UserServiceImpl implements UserService {
+    private final static Logger logger = LogManager.getLogger();
     @Override
     public User logIn(String username, String password) {
         return null;
@@ -23,6 +26,7 @@ public class UserServiceImpl implements UserService {
         try {
             if (dao.hasUserWithEmail(email)) throw new AlreadyRegisteredException("for email " + email);
         } catch (DAOException e) {
+            logger.error(e.getMessage(), e);
             throw new ServiceException(e.getMessage(), e);
         }
 

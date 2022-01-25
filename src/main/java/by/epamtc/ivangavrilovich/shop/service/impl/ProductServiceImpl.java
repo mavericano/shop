@@ -43,4 +43,18 @@ public class ProductServiceImpl implements ProductService {
 
         return numberOfProducts;
     }
+
+    @Override
+    public Product retrieveProductById(int id) throws ServiceException  {
+        ProductDAO dao = DAOProvider.getInstance().getProductDAOImpl();
+        Product result;
+        try {
+            result = dao.retrieveProductById(id);
+        } catch (DAOException e) {
+            logger.error(String.format("Error while retrieving product by id %d", id), e);
+            throw new ServiceException(String.format("Error while retrieving product by id %d", id), e);
+        }
+
+        return result;
+    }
 }

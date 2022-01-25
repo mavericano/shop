@@ -19,6 +19,7 @@ public class ViewAllProducts implements Command {
     private final static Logger logger = LogManager.getLogger();
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        request.getSession(true).setAttribute("lastAction", request.getQueryString());
         ProductService service = ServiceProvider.getInstance().getProductServiceImpl();
 
         String page = request.getParameter("page");

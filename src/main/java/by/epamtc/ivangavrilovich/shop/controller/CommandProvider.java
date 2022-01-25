@@ -18,6 +18,7 @@ public class CommandProvider {
         commands.put("REGISTER", new Register());
         commands.put("VIEW_HOME_PAGE", new ViewHomePage());
         commands.put("VIEW_ALL_PRODUCTS", new ViewAllProducts());
+        commands.put("VIEW_SINGLE_PRODUCT", new ViewSingleProduct());
         commands.put("CHANGE_LANGUAGE", new ChangeLanguage());
         commands.put("WRONG_COMMAND", new WrongCommand());
     }

@@ -1,25 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%--<html>--%>
-<%--<head>--%>
-<%--    <title>Sign up</title>--%>
-<%--</head>--%>
-<%--<body>--%>
-<%--    <form method="post" action="controller">--%>
-<%--        <c:out value="${requestScope.message}"/><br/>--%>
-<%--        <input type="hidden" name="command" value="REGISTER"/>--%>
-<%--        <label for="email">Email</label>--%>
-<%--        <input id="email" type="text" name="email"/><br/>--%>
-<%--        <label for="password">Password</label>--%>
-<%--        <input id="password" type="password" name="password"/><br/>--%>
-<%--        <label for="address">Address</label>--%>
-<%--        <input id="address" type="text" name="defaultAddress"/><br/>--%>
-<%--        <input type="submit" value="Register"/>--%>
-<%--    </form>--%>
-<%--</body>--%>
-<%--</html>--%>
 <html>
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
@@ -37,22 +18,25 @@
     <link rel="stylesheet" href="../resources/assets/css/Login-screen.css">
     <link rel="stylesheet" href="../resources/assets/css/Pretty-Header.css">
     <link rel="stylesheet" href="../resources/assets/css/styles.css">
+    <script defer src="validateOnRegister.js"></script>
 </head>
 
 <body>
+<%--TODO i18n--%>
     <div id="login-one" class="login-one">
-        <form class="login-one-form" style="height: 471px;" action="${pageContext.request.contextPath}/pages/controller?command=REGISTER" method="POST">
+        <form id="form" novalidate class="login-one-form" style="height: 471px;" action="${pageContext.request.contextPath}/pages/controller?command=REGISTER" method="POST">
             <div class="col">
                 <div class="login-one-ico"><i class="fa fa-pencil" id="lockico" style="color: rgb(38, 157, 157);"></i></div>
                 <h3 id="heading" style="margin: 10px;">Sign up:</h3>
-                <input type="text" class="form-control" name="number" placeholder="Phone number" />
-                <input type="text" class="form-control" name="email" placeholder="Email" />
+                <input type="text" class="form-control" name="number" id="number" placeholder="Phone number" />
+                <input type="text" class="form-control" name="email" id="email" placeholder="Email" />
                 <div class="form-group">
                     <div></div>
-                    <input type="password" class="form-control" name="password" placeholder="Password" />
-                    <button class="btn btn-primary" id="button" style="background-color: rgb(38, 157, 157); margin-top: 10px;" type="submit">Log in</button>
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Password" />
+                    <input type="password" class="form-control" name="second-password" id="second-password" placeholder="Confirm password" />
+                    <button class="btn btn-primary" id="button" style="background-color: rgb(38, 157, 157); margin-top: 10px;" type="submit">Sign up</button>
                     <a class="btn btn-primary" id="button" href="${pageContext.request.contextPath}/pages/controller?command=VIEW_HOME_PAGE" style="background-color: rgb(255, 255, 255); margin-top: 10px; color: rgb(0, 0, 0)" >Cancel</a>
-                    <a style="color: salmon; font-size: 12px;">
+                    <a id="error" style="color: salmon; font-size: 12px;">
                         <c:out value="${requestScope.message}"/>
                     </a>
                 </div>
