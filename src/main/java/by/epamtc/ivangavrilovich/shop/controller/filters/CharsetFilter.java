@@ -17,8 +17,4 @@ public class CharsetFilter implements Filter {
         Filter.super.init(filterConfig);
     }
 
-    @Override
-    public void destroy() {
-        Filter.super.destroy();
-    }
 }

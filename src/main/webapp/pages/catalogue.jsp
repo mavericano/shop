@@ -20,7 +20,7 @@
 </head>
 <body>
     <jsp:include page="header.jsp"/>
-    <ct:pagination numberOfPages="${requestScope.numberOfPages}" currentPage="${requestScope.page}"/>
+    <ct:pagination numberOfPages="${requestScope.numberOfPages}" currentPage="${requestScope.page}" path="/pages/controller?command=VIEW_ALL_PRODUCTS&page="/>
     <ct:productsGrid products="${requestScope.products}"/>
     <jsp:include page="footer.jsp"/>
 </body>

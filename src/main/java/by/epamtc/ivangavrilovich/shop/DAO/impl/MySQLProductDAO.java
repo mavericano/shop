@@ -1,7 +1,7 @@
 package by.epamtc.ivangavrilovich.shop.DAO.impl;
 
 import by.epamtc.ivangavrilovich.shop.DAO.ConnectionPool;
-import by.epamtc.ivangavrilovich.shop.DAO.DAOException;
+import by.epamtc.ivangavrilovich.shop.DAO.exceptions.DAOException;
 import by.epamtc.ivangavrilovich.shop.DAO.interfaces.ProductDAO;
 import by.epamtc.ivangavrilovich.shop.bean.Product;
 import org.apache.logging.log4j.LogManager;
@@ -199,7 +199,7 @@ public class MySQLProductDAO implements ProductDAO {
     }
 
     @Override
-    public boolean modifyDelStatus(Product product, boolean newStatus) throws DAOException {
+    public void modifyDelStatus(Product product, boolean newStatus) throws DAOException {
         Connection conn = ConnectionPool.getInstance().takeConnection();
         String sql = "UPDATE products SET del=? WHERE product_id = ?";
         PreparedStatement ps;
@@ -215,39 +215,53 @@ public class MySQLProductDAO implements ProductDAO {
         } finally {
             ConnectionPool.getInstance().returnConnection(conn);
         }
-        return false;
     }
 
     private String buildSetExpr(Product product) {
         StringJoiner sj = new StringJoiner(", ");
-        sj.add(THUMBNAIL_COLUMN_NAME + "=" + product.getThumbnail());
-        sj.add(NAME_COLUMN_NAME + "=" + product.getName());
-        sj.add(PRICE_COLUMN_NAME + "=" + product.getPrice());
-        sj.add(STOCK_COLUMN_NAME + "=" + product.getStock());
-        sj.add(TYPE_COLUMN_NAME + "=" + product.getType());
-        sj.add("`" + TIMES_ORDER_COLUMN_NAME + "`" + "=" + product.getTimesOrdered());
-        sj.add(MAKER_COLUMN_NAME + "=" + product.getMaker());
-        sj.add(BODY_COLUMN_NAME + "=" + product.getBody());
-        sj.add(FRET_COLUMN_NAME + "=" + product.getFret());
-        sj.add(SCALE_COLUMN_NAME + "=" + product.getScale());
-        sj.add("`" + FRET_AMOUNT_COLUMN_NAME + "`" + "=" + product.getFretAmount());
-        sj.add(PICKS_COLUMN_NAME + "=" + product.getPicks());
-        sj.add("`" + BELT_BUTTON_COLUMN_NAME + "`" + "=" + product.isBeltButton());
+        sj.add(THUMBNAIL_COLUMN_NAME + "='" + product.getThumbnail() + "'");
+        sj.add(NAME_COLUMN_NAME + "='" + product.getName() + "'");
+        sj.add(PRICE_COLUMN_NAME + "='" + product.getPrice() + "'");
+        sj.add(STOCK_COLUMN_NAME + "='" + product.getStock() + "'");
+        sj.add(TYPE_COLUMN_NAME + "='" + product.getType() + "'");
+        sj.add("`" + TIMES_ORDER_COLUMN_NAME + "`" + "='" + product.getTimesOrdered() + "'");
+        sj.add(MAKER_COLUMN_NAME + "='" + product.getMaker() + "'");
+        sj.add(BODY_COLUMN_NAME + "='" + product.getBody() + "'");
+        sj.add(FRET_COLUMN_NAME + "='" + product.getFret() + "'");
+        sj.add(SCALE_COLUMN_NAME + "='" + product.getScale() + "'");
+        sj.add("`" + FRET_AMOUNT_COLUMN_NAME + "`" + "='" + product.getFretAmount() + "'");
+        sj.add(PICKS_COLUMN_NAME + "='" + product.getPicks() + "'");
+        sj.add("`" + BELT_BUTTON_COLUMN_NAME + "`" + "='" + (product.isBeltButton() ? "1" : "0") + "'");
 
         return sj.setEmptyValue("").toString();
     }
 
+    private void merge(Product current, Product changed) {
+        current.setName(changed.getName());
+        current.setPrice(changed.getPrice());
+        current.setMaker(changed.getMaker());
+        current.setBody(changed.getBody());
+        current.setFret(changed.getFret());
+        current.setScale(changed.getScale());
+        current.setFretAmount(changed.getFretAmount());
+        current.setPicks(changed.getPicks());
+        current.setBeltButton(changed.isBeltButton());
+    }
+
+    //TODO fix to avoid reading
     @Override
-    public boolean updateProduct(Product product) throws DAOException {
+    public void updateProduct(Product product) throws DAOException {
+        Product currentState = retrieveProductById(product.getProductId());
+        merge(currentState, product);
         Connection conn = ConnectionPool.getInstance().takeConnection();
-        String setExpr = buildSetExpr(product);
+        String setExpr = buildSetExpr(currentState);
         String sql = "UPDATE products SET " +
                 setExpr +
                 " WHERE product_id = ?";
         PreparedStatement ps;
         try {
             ps = conn.prepareStatement(sql);
-            ps.setInt(1, product.getProductId());
+            ps.setInt(1, currentState.getProductId());
             ps.executeUpdate();
             ps.close();
         } catch (SQLException e) {
@@ -256,7 +270,6 @@ public class MySQLProductDAO implements ProductDAO {
         } finally {
             ConnectionPool.getInstance().returnConnection(conn);
         }
-        return false;
     }
 
     @Override

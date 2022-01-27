@@ -1,12 +1,10 @@
 package by.epamtc.ivangavrilovich.shop.controller.impl;
 
-import by.epamtc.ivangavrilovich.shop.bean.Product;
 import by.epamtc.ivangavrilovich.shop.bean.User;
 import by.epamtc.ivangavrilovich.shop.controller.Command;
-import by.epamtc.ivangavrilovich.shop.service.interfaces.CartService;
-import by.epamtc.ivangavrilovich.shop.service.interfaces.ProductService;
 import by.epamtc.ivangavrilovich.shop.service.ServiceProvider;
 import by.epamtc.ivangavrilovich.shop.service.exceptions.ServiceException;
+import by.epamtc.ivangavrilovich.shop.service.interfaces.CartService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,25 +13,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class ViewSingleProduct implements Command {
+public class IncreaseQuantity implements Command {
     private final static Logger logger = LogManager.getLogger();
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        request.getSession(true).setAttribute("lastAction", request.getQueryString());
-        ProductService service = ServiceProvider.getInstance().getProductServiceImpl();
-        CartService cartService = ServiceProvider.getInstance().getCartServiceImpl();
+        CartService service = ServiceProvider.getInstance().getCartServiceImpl();
         int productId = Integer.parseInt(request.getParameter("id"));
         int userId = ((User)request.getSession(true).getAttribute("user")).getUserId();
-        Product product;
-        boolean alreadyInCart = false;
         try {
-            product = service.retrieveProductById(productId);
-            alreadyInCart = cartService.checkPresence(userId, productId);
-            request.setAttribute("product", product);
-            request.setAttribute("alreadyInCart", alreadyInCart);
-            request.getRequestDispatcher("product.jsp").forward(request, response);
+            service.increaseQuantity(userId, productId);
+            response.sendRedirect(request.getContextPath() + "/pages/controller?command=VIEW_CART");
         } catch (ServiceException e) {
-            logger.error("Error while retrieving all products with wrap", e);
+            logger.error("Error while increasing", e);
             response.sendRedirect(request.getContextPath() + "/pages/serverException.jsp");
         }
     }

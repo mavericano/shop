@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class Pagination extends TagSupport {
     private final static Logger logger = LogManager.getLogger();
-    private final static String PATH_PAGINATION = "/pages/controller?command=VIEW_ALL_PRODUCTS&page=";
+    private String path;
     private int currentPage;
     private int numberOfPages;
 
@@ -25,13 +25,13 @@ public class Pagination extends TagSupport {
             if (currentPage != 1) {
                 out.write("<li class=\"page-item\"><a class=\"page-link\" " +
                         "href=\"" +
-                        pageContext.getRequest().getServletContext().getContextPath() + PATH_PAGINATION + (currentPage - 1) +
+                        pageContext.getRequest().getServletContext().getContextPath() + path + (currentPage - 1) +
                         "\" aria-label=\"Previous\" style=\"color: black;\"><span aria-hidden=\"true\"><</span></a></li>");
             }
             for (int i = 1; i <= numberOfPages; i++) {
                 out.write("<li class=\"page-item\"><a class=\"page-link\" " +
                         "href=\"" +
-                        pageContext.getRequest().getServletContext().getContextPath() + PATH_PAGINATION + i +
+                        pageContext.getRequest().getServletContext().getContextPath() + path + i +
                         "\"");
                 if (i == currentPage) {
                     out.write("style=\"color: white; background-color: #208f8f;\"");
@@ -45,7 +45,7 @@ public class Pagination extends TagSupport {
             if (currentPage != numberOfPages) {
                 out.write("<li class=\"page-item\"><a class=\"page-link\" " +
                         "href=\"" +
-                        pageContext.getRequest().getServletContext().getContextPath() + PATH_PAGINATION + (currentPage + 1) +
+                        pageContext.getRequest().getServletContext().getContextPath() + path + (currentPage + 1) +
                         "\" aria-label=\"Previous\" style=\"color: black;\"><span aria-hidden=\"true\">></span></a></li>");
             }
             out.write("</ul>");
@@ -64,5 +64,9 @@ public class Pagination extends TagSupport {
 
     public void setNumberOfPages(int numberOfPages) {
         this.numberOfPages = numberOfPages;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 }

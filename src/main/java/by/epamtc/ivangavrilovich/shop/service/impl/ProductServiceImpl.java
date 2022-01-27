@@ -1,11 +1,14 @@
 package by.epamtc.ivangavrilovich.shop.service.impl;
 
-import by.epamtc.ivangavrilovich.shop.DAO.DAOException;
+import by.epamtc.ivangavrilovich.shop.DAO.exceptions.DAOException;
 import by.epamtc.ivangavrilovich.shop.DAO.DAOProvider;
 import by.epamtc.ivangavrilovich.shop.DAO.interfaces.ProductDAO;
 import by.epamtc.ivangavrilovich.shop.bean.Product;
-import by.epamtc.ivangavrilovich.shop.service.ProductService;
+import by.epamtc.ivangavrilovich.shop.service.ServiceProvider;
+import by.epamtc.ivangavrilovich.shop.service.exceptions.InvalidInputsException;
+import by.epamtc.ivangavrilovich.shop.service.interfaces.ProductService;
 import by.epamtc.ivangavrilovich.shop.service.exceptions.ServiceException;
+import by.epamtc.ivangavrilovich.shop.service.interfaces.ValidationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -56,5 +59,38 @@ public class ProductServiceImpl implements ProductService {
         }
 
         return result;
+    }
+
+    @Override
+    public void updateProduct(int id, String name, String maker, String body, String fret, String scale, String fretAmount, String picks, String beltButton, String price) throws ServiceException, InvalidInputsException {
+        ValidationService validator = ServiceProvider.getInstance().getValidationServiceImpl();
+        if (!validator.validateEmptiness(name, maker, body, fret, scale, fretAmount, picks, beltButton, price)) {
+            throw new InvalidInputsException("One of fields is empty");
+        }
+        if (!validator.validateInt(scale)) {
+            throw new InvalidInputsException("Scale must be a number");
+        }
+        if (!validator.validateInt(fretAmount)) {
+            throw new InvalidInputsException("Fret amount must be a number");
+        }
+        if (!validator.validateBeltButton(beltButton)) {
+            throw new InvalidInputsException("\"Belt button\" must contain either \"yes\" or \"no\"");
+        }
+        if (!validator.validateFloat(price)) {
+            throw new InvalidInputsException("Price must be a number (x.xx or xxx)");
+        }
+
+        int scaleInt = Integer.parseInt(scale);
+        int amountInt = Integer.parseInt(fretAmount);
+        boolean beltButtonBool = "yes".equals(beltButton);
+        double priceDouble = Double.parseDouble(price);
+        Product product = new Product(id, name, priceDouble, maker, body, fret, scaleInt, amountInt, picks, beltButtonBool);
+        ProductDAO dao = DAOProvider.getInstance().getProductDAOImpl();
+        try {
+            dao.updateProduct(product);
+        } catch (DAOException e) {
+            logger.error(String.format("Error while updating product by id %d", id), e);
+            throw new ServiceException(String.format("Error while updating product by id %d", id), e);
+        }
     }
 }

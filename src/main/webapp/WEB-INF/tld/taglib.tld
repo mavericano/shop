@@ -30,5 +30,21 @@
             <required> true </required>
             <rtexprvalue> true </rtexprvalue> <!-- Разрешает динамические значения атрибута -->
         </attribute>
+        <attribute>
+            <name> path </name>
+            <required> true </required>
+            <rtexprvalue> true </rtexprvalue> <!-- Разрешает динамические значения атрибута -->
+        </attribute>
+    </tag>
+
+    <tag>
+        <name> cartGrid </name>
+        <tag-class>by.epamtc.ivangavrilovich.shop.tags.CartGrid</tag-class>
+        <body-content> empty </body-content>
+        <attribute>
+            <name> products </name>
+            <required> true </required>
+            <rtexprvalue> true </rtexprvalue> <!-- Разрешает динамические значения атрибута -->
+        </attribute>
     </tag>
 </taglib>

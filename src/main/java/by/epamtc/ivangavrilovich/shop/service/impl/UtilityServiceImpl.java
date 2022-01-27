@@ -1,10 +1,10 @@
 package by.epamtc.ivangavrilovich.shop.service.impl;
 
 import by.epamtc.ivangavrilovich.shop.DAO.ConnectionPool;
-import by.epamtc.ivangavrilovich.shop.DAO.DAOException;
+import by.epamtc.ivangavrilovich.shop.DAO.exceptions.DAOException;
 import by.epamtc.ivangavrilovich.shop.DAO.DAOProvider;
 import by.epamtc.ivangavrilovich.shop.bean.Product;
-import by.epamtc.ivangavrilovich.shop.service.UtilityService;
+import by.epamtc.ivangavrilovich.shop.service.interfaces.UtilityService;
 import by.epamtc.ivangavrilovich.shop.service.exceptions.ServiceException;
 
 import javax.servlet.http.HttpSession;

@@ -1,6 +1,5 @@
 package by.epamtc.ivangavrilovich.shop.controller;
 
-import by.epamtc.ivangavrilovich.shop.DAO.DAOProvider;
 import by.epamtc.ivangavrilovich.shop.controller.impl.*;
 
 import java.util.HashMap;
@@ -14,11 +13,20 @@ public class CommandProvider {
 
     private CommandProvider(){
         commands.put("SIGN_IN", new SignIn());
+        commands.put("VIEW_SIGN_IN", new ViewSignIn());
         commands.put("SIGN_OUT", new SignOut());
         commands.put("REGISTER", new Register());
+        commands.put("VIEW_REGISTER", new ViewRegister());
         commands.put("VIEW_HOME_PAGE", new ViewHomePage());
         commands.put("VIEW_ALL_PRODUCTS", new ViewAllProducts());
         commands.put("VIEW_SINGLE_PRODUCT", new ViewSingleProduct());
+        commands.put("VIEW_CART", new ViewCart());
+        commands.put("ADD_TO_CART", new AddToCart());
+        commands.put("REMOVE_FROM_CART", new RemoveFromCart());
+        commands.put("DECREASE_QUANTITY", new DecreaseQuantity());
+        commands.put("INCREASE_QUANTITY", new IncreaseQuantity());
+        commands.put("EDIT_CURRENT_PRODUCT", new EditCurrentProduct());
+        commands.put("SUBMIT_EDITING", new SubmitEditing());
         commands.put("CHANGE_LANGUAGE", new ChangeLanguage());
         commands.put("WRONG_COMMAND", new WrongCommand());
     }

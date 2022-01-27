@@ -33,11 +33,6 @@ public class User implements Serializable {
         this.banned = banned;
     }
 
-//    public User(int userId, String email, String password, String defaultAddress, int role, boolean banned) {
-//        this(email, password, defaultAddress, role, banned);
-//        this.userId = userId;
-//    }
-
     public User(int userId, String email, String password, String number, int role, String roleName, boolean banned) {
         this(email, password, number, role, banned);
         this.roleName = roleName;
@@ -77,10 +72,6 @@ public class User implements Serializable {
     public int getUserId() {
         return userId;
     }
-
-//    public void setId(int id) {
-//        this.id = id;
-//    }
 
     public String getEmail() {
         return email;

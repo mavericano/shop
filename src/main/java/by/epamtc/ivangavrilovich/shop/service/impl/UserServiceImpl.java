@@ -1,27 +1,33 @@
 package by.epamtc.ivangavrilovich.shop.service.impl;
 
-import by.epamtc.ivangavrilovich.shop.DAO.DAOException;
+import by.epamtc.ivangavrilovich.shop.DAO.exceptions.DAOException;
 import by.epamtc.ivangavrilovich.shop.DAO.DAOProvider;
 import by.epamtc.ivangavrilovich.shop.DAO.interfaces.UserDAO;
 import by.epamtc.ivangavrilovich.shop.bean.User;
-import by.epamtc.ivangavrilovich.shop.service.exceptions.AlreadyRegisteredException;
-import by.epamtc.ivangavrilovich.shop.service.exceptions.InvalidPasswordException;
-import by.epamtc.ivangavrilovich.shop.service.exceptions.UserNotFoundException;
-import by.epamtc.ivangavrilovich.shop.service.exceptions.ServiceException;
-import by.epamtc.ivangavrilovich.shop.service.UserService;
+import by.epamtc.ivangavrilovich.shop.service.ServiceProvider;
+import by.epamtc.ivangavrilovich.shop.service.exceptions.*;
+import by.epamtc.ivangavrilovich.shop.service.interfaces.UserService;
 import by.epamtc.ivangavrilovich.shop.service.hashing.Hasher;
+import by.epamtc.ivangavrilovich.shop.service.interfaces.ValidationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class UserServiceImpl implements UserService {
     private final static Logger logger = LogManager.getLogger();
-    @Override
-    public User logIn(String username, String password) {
-        return null;
-    }
 
     @Override
-    public boolean register(String email, String password, String defaultAddress, int role, boolean banned) throws ServiceException, AlreadyRegisteredException {
+    public void register(String email, String firstPassword, String secondPassword, String phoneNumber, int role, boolean banned) throws ServiceException, AlreadyRegisteredException, InvalidInputsException {
+        ValidationService validator = ServiceProvider.getInstance().getValidationServiceImpl();
+        if (!validator.validatePhoneNumber(phoneNumber)) {
+            throw new InvalidInputsException("Invalid phone number");
+        }
+        if (!validator.validateEqualPasswords(firstPassword, secondPassword)) {
+            throw new InvalidInputsException("Passwords are not equal");
+        }
+        if (!validator.validatePassword(firstPassword)) {
+            throw new InvalidInputsException("Invalid password");
+        }
+
         UserDAO dao = DAOProvider.getInstance().getUserDAOImpl();
         try {
             if (dao.hasUserWithEmail(email)) throw new AlreadyRegisteredException("for email " + email);
@@ -31,32 +37,34 @@ public class UserServiceImpl implements UserService {
         }
 
         String salt = Hasher.generateSalt();
-        String hash = Hasher.hashPassword(password, salt);
+        String hash = Hasher.hashPassword(firstPassword, salt);
         String storedPassword = Hasher.generateStoredPassword(hash, salt);
-        User user = new User(email, storedPassword, defaultAddress, role, banned);
+        User user = new User(email, storedPassword, phoneNumber, role, banned);
         try {
             dao.addUser(user);
         } catch (DAOException e) {
-            e.printStackTrace();
+            logger.error(String.format("Error while registering user for email %s and password %s", email, firstPassword), e);
+            throw new ServiceException(String.format("Error while registering user for email %s and password %s", email, firstPassword), e);
         }
-        return true;
     }
 
     @Override
     public User login(String email, String password) throws UserNotFoundException, InvalidPasswordException, ServiceException {
         UserDAO dao = DAOProvider.getInstance().getUserDAOImpl();
-        User result = null;
+        User result;
         try {
             result = dao.readUserByEmail(email);
             if (result == null) {
                 throw new UserNotFoundException("No user with such email");
             }
         } catch (DAOException e) {
+            logger.error("Error while fetching user by email", e);
             throw new ServiceException("Error while fetching user by email", e);
         }
-        String salt = result.getPassword().substring(0, 15);
+        int delimPos = result.getPassword().lastIndexOf(":");
+        String salt = result.getPassword().substring(0, delimPos);
         String passwordHash = Hasher.hashPassword(password, salt);
-        String storedHash = result.getPassword().substring(16);
+        String storedHash = result.getPassword().substring(delimPos + 1);
         if (!passwordHash.equals(storedHash)) throw new InvalidPasswordException("Invalid password");
         return result;
     }

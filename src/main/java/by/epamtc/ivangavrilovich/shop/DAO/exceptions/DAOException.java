@@ -1,4 +1,4 @@
-package by.epamtc.ivangavrilovich.shop.DAO;
+package by.epamtc.ivangavrilovich.shop.DAO.exceptions;
 
 public class DAOException extends Exception {
     public DAOException() {

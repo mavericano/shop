@@ -23,6 +23,19 @@ public class Product implements Serializable {
     public Product() {
     }
 
+    public Product(int id, String name, double price, String maker, String body, String fret, int scale, int fretAmount, String picks, boolean beltButton) {
+        this.productId = id;
+        this.name = name;
+        this.price = price;
+        this.maker = maker;
+        this.body = body;
+        this.fret = fret;
+        this.scale = scale;
+        this.fretAmount = fretAmount;
+        this.picks = picks;
+        this.beltButton = beltButton;
+    }
+
     public Product(int productId, String thumbnail, String name, double price, int stock, int type, String typeName, int timesOrdered, String maker, String body, String fret, int scale, int fretAmount, String picks, boolean beltButton) {
         this.productId = productId;
         this.thumbnail = thumbnail;

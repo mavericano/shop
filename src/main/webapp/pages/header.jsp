@@ -53,21 +53,21 @@
                     <c:choose>
                         <c:when test="${sessionScope.user.role == 4}">
                             <span class="navbar-text">
-                                <a class="login" href="sign_in.jsp">${sessionScope.logInLabel}</a>
+                                <a class="login" href="${pageContext.request.contextPath}/pages/controller?command=VIEW_SIGN_IN">${sessionScope.logInLabel}</a>
                             </span>
-                            <a class="btn btn-light action-button" role="button" href="register.jsp">${sessionScope.registerLabel}</a>
+                            <a class="btn btn-light action-button" role="button" href="${pageContext.request.contextPath}/pages/controller?command=VIEW_REGISTER">${sessionScope.registerLabel}</a>
                         </c:when>
                         <c:when test="${sessionScope.user.role == 3}">
                             <a class="btn btn-light action-button" role="button" style="color: red; background: transparent; border: 1px solid red;" href="${pageContext.request.contextPath}/pages/controller?command=SIGN_OUT">${sessionScope.logOutLabel}</a>
-                            <c:out value="admin"/>
+
                         </c:when>
                         <c:when test="${sessionScope.user.role == 2}">
                             <a class="btn btn-light action-button" role="button" style="color: red; background: transparent; border: 1px solid red;" href="${pageContext.request.contextPath}/pages/controller?command=SIGN_OUT">${sessionScope.logOutLabel}</a>
-                            <c:out value="courier"/>
+
                         </c:when>
                         <c:when test="${sessionScope.user.role == 1}">
+                            <a href="${pageContext.request.contextPath}/pages/controller?command=VIEW_CART" class="btn btn-light action-button" role="button"><i class="fa fa-5px fa-shopping-cart" style="margin-left: 2px;"></i> ${sessionScope.cartLabel}</a>
                             <a class="btn btn-danger action-button" role="button" style="color: red; background: transparent; border: 1px solid red;" href="${pageContext.request.contextPath}/pages/controller?command=SIGN_OUT">${sessionScope.logOutLabel}</a>
-                            <c:out value="basic user"/>
                         </c:when>
                     </c:choose>
                 </div>

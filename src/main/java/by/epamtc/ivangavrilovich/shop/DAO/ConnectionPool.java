@@ -1,5 +1,6 @@
 package by.epamtc.ivangavrilovich.shop.DAO;
 
+import by.epamtc.ivangavrilovich.shop.DAO.exceptions.ConnectionPoolException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,13 +22,13 @@ public class ConnectionPool {
     private final String PASSWORD_PROPERTY = "password";
     private final String POOL_SIZE_PROPERTY = "poolSize";
     private final int DEFAULT_POOL_SIZE = 5;
-    private String driverName;
-    private String url;
-    private String user;
-    private String password;
+    private final String driverName;
+    private final String url;
+    private final String user;
+    private final String password;
     private int poolSize;
-    private BlockingQueue<Connection> givenConnections;
-    private BlockingQueue<Connection> freeConnections;
+    private final BlockingQueue<Connection> givenConnections;
+    private final BlockingQueue<Connection> freeConnections;
     private final Lock lock = new ReentrantLock();
 
     private static class InstanceHolder {
@@ -108,36 +109,6 @@ public class ConnectionPool {
         lock.unlock();
     }
 
-    public void closeConnection(Connection con, Statement st, ResultSet rs) {
-        try {
-            con.close();
-        } catch (SQLException e) {
-//            logger.log(Level.ERROR, "Connection isn't return to the pool.");
-        }
-        try {
-            rs.close();
-        } catch (SQLException e) {
-//            logger.log(Level.ERROR, "ResultSet isn't closed.");
-        }
-        try {
-            st.close();
-        } catch (SQLException e) {
-//            logger.log(Level.ERROR, "Statement isn't closed.");
-        }
-    }
-
-    public void closeConnection(Connection con, Statement st) {
-        try {
-            con.close();
-        } catch (SQLException e) {
-//            logger.log(Level.ERROR, "Connection isn't return to the pool.");
-        }
-        try {
-            st.close();
-        } catch (SQLException e) {
-//            logger.log(Level.ERROR, "Statement isn't closed.");
-        }
-    }
     private void closeConnectionsQueue(BlockingQueue<Connection> queue)
             throws SQLException {
         Connection connection;

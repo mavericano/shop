@@ -3,7 +3,7 @@ package by.epamtc.ivangavrilovich.shop.controller.impl;
 import by.epamtc.ivangavrilovich.shop.bean.Product;
 import by.epamtc.ivangavrilovich.shop.controller.Command;
 import by.epamtc.ivangavrilovich.shop.service.ServiceProvider;
-import by.epamtc.ivangavrilovich.shop.service.UtilityService;
+import by.epamtc.ivangavrilovich.shop.service.interfaces.UtilityService;
 import by.epamtc.ivangavrilovich.shop.service.exceptions.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

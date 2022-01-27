@@ -25,8 +25,8 @@ public class Controller extends HttpServlet {
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        CommandProvider.getInstance().provideCommand(request.getParameter("command")).execute(request, response);
         logger.info(request.getParameter("command"));
+        CommandProvider.getInstance().provideCommand(request.getParameter("command")).execute(request, response);
     }
 
     public void destroy() {

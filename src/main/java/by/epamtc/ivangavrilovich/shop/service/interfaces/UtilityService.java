@@ -1,4 +1,4 @@
-package by.epamtc.ivangavrilovich.shop.service;
+package by.epamtc.ivangavrilovich.shop.service.interfaces;
 
 import by.epamtc.ivangavrilovich.shop.bean.Product;
 import by.epamtc.ivangavrilovich.shop.service.exceptions.ServiceException;

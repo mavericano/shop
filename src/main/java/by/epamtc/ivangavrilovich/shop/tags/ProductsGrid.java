@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.util.List;
 
 public class ProductsGrid extends TagSupport {
-    //TODO fix
     private final static String PATH_PRODUCT = "/pages/controller?command=VIEW_SINGLE_PRODUCT&id=";
     private final static Logger logger = LogManager.getLogger();
     private List<Product> products;
@@ -50,8 +49,10 @@ public class ProductsGrid extends TagSupport {
                                             //TODO desc or replace with smth
                                             out.write("<p class=\"product-description\">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ornare sem sed nisl dignissim, facilisis dapibus lacus vulputate. Sed lacinia lacinia magna. </p>");
                                             out.write("<div class=\"row\">");
-                                                out.write("<div class=\"col-6\"><a class=\"btn btn-light\" type=\"button\" href=\"" +
-                                                        link + "\">${requestScope.page}</a></div>");
+                                                out.write("<div class=\"col-6\"><a role=\"button\" class=\"btn btn-light action-button\" href=\"" +
+                                                        link + "\">" +
+                                                        pageContext.getSession().getAttribute("moreButton") +
+                                                        "</a></div>");
                                                 out.write("<div class=\"col-6\">");
                                                     out.write("<p class=\"product-price\">" +
                                                             product.getPrice() +

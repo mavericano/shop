@@ -17,24 +17,74 @@
     <link rel="stylesheet" href="../resources/assets/css/Header-Dark.css">
     <link rel="stylesheet" href="../resources/assets/css/Pretty-Header.css">
     <link rel="stylesheet" href="../resources/assets/css/styles.css">
+    <script defer src="../resources/assets/js/validateOnProductEdit.js"></script>
 </head>
-<%--TODO expand--%>
 <body>
     <jsp:include page="header.jsp"/>
-    <c:out value="${product.productId}"/>
     <div class="container">
         <h1 class="text-center">${sessionScope.productDetailsLabel}</h1>
         <div class="row">
             <div class="col-md-7">
                 <div class="row">
+<%--                    TODO fix thumbnail--%>
                     <div class="col-md-12"><img class="img-thumbnail img-fluid center-block" src="../resources/assets/img/iphone6.jpg" /></div>
                 </div>
             </div>
             <div class="col-md-5">
-                <h1>${product.name}</h1>
-                <p></p>
-                <h2 class="text-center text-success"><i class="fa fa-dollar"></i>${product.price}$<br/><br/><br/></h2>
-                <button class="btn btn-danger btn-lg center-block" type="button"><i class="fa fa-cart-plus"></i> ${sessionScope.buyButton}</button>
+                <c:if test="${requestScope.editing}">
+                    <form id="form" action="${pageContext.request.contextPath}/pages/controller?command=SUBMIT_EDITING" method="POST">
+                        <p>
+                            <input type="hidden" name="id" value="${product.productId}"/>
+                            <input class="form-control to-validate" type="text" id="name" name="name" placeholder="Name" value="${product.name}"/><br/>
+                            <input class="form-control to-validate" type="text" id="maker" name="maker" placeholder="Maker" value="${product.maker}"/><br/>
+                            <input class="form-control to-validate" type="text" id="body" name="body" placeholder="Body material" value="${product.body}"/><br/>
+                            <input class="form-control to-validate" type="text" id="fret" name="fret" placeholder="Fretboard material" value="${product.fret}"/><br/>
+                            <input class="form-control to-validate" type="text" id="scale" name="scale" placeholder="Scale" value="${product.scale}"/><br/>
+                            <input class="form-control to-validate" type="text" id="fretAmount" name="fretAmount" placeholder="Fret amount" value="${product.fretAmount}"/><br/>
+                            <input class="form-control to-validate" type="text" id="picks" name="picks" placeholder="Picks" value="${product.picks}"/><br/>
+                            <input class="form-control to-validate" type="text" id="beltButton" name="beltButton" placeholder="Belt button" value="${product.beltButton}"/><br/>
+                        </p>
+                        <h2 class="text-center">
+                            <input class="form-control to-validate" type="text" id="price" name="price" placeholder="Price" value="${product.price}"/><br/>
+                        </h2>
+                        <button class="btn btn-primary" id="button" style="background-color: rgb(38, 157, 157); margin-top: 10px;" type="submit">Submit</button>
+                        <a class="btn btn-primary" id="button" href="${pageContext.request.contextPath}/pages/controller?command=VIEW_SINGLE_PRODUCT&id=${product.productId}" style="background-color: rgb(255, 255, 255); margin-top: 10px; color: rgb(0, 0, 0)" >Cancel</a>
+                        <a id="error" style="color: salmon; font-size: 12px;">
+                            <c:out value="${requestScope.message}"/>
+                        </a>
+                    </form>
+                </c:if>
+                <c:if test="${not requestScope.editing}">
+                    <h1>${product.name}</h1>
+                    <p>
+                        ${sessionScope.makerLabel}: ${product.maker}<br/>
+                        ${sessionScope.bodyLabel}: ${product.body}<br/>
+                        ${sessionScope.fretLabel}: ${product.fret}<br/>
+                        ${sessionScope.scaleLabel}: ${product.scale}mm<br/>
+                        ${sessionScope.fretAmountLabel}: ${product.fretAmount}<br/>
+                        ${sessionScope.picksLabel}: <c:if test="${empty product.picks}">No picks</c:if>${product.picks}<br/>
+                        ${sessionScope.beltButtonLabel}: <c:if test="${product.beltButton eq true}">yes</c:if><c:if test="${product.beltButton eq false}">no</c:if><br/>
+                    </p>
+                    <h2 class="text-center text-success"><i class="fa fa-dollar"></i>${product.price}<br/><br/><br/></h2>
+                </c:if>
+                <c:choose>
+                    <c:when test="${sessionScope.user.role == 1}">
+                        <c:if test="${requestScope.alreadyInCart}">
+                            <a href="${pageContext.request.contextPath}/pages/controller?command=REMOVE_FROM_CART&id=${product.productId}" class="btn btn-light action-button center-block" role="button" ><i class="fa fa-times"></i> ${sessionScope.alreadyInCartLabel}</a>
+                        </c:if>
+                        <c:if test="${not requestScope.alreadyInCart}">
+                            <a href="${pageContext.request.contextPath}/pages/controller?command=ADD_TO_CART&id=${product.productId}" class="btn btn-light action-button center-block" role="button" ><i class="fa fa-cart-plus"></i> ${sessionScope.buyButton}</a>
+                        </c:if>
+                    </c:when>
+                    <c:when test="${sessionScope.user.role == 4}">
+                        You need to log in order to buy a product
+                    </c:when>
+                    <c:when test="${sessionScope.user.role == 3}">
+                        <c:if test="${not requestScope.editing}">
+                            <a class="btn btn-primary" id="button" href="${pageContext.request.contextPath}/pages/controller?command=EDIT_CURRENT_PRODUCT&id=${product.productId}" style="background-color: rgb(255, 255, 255); margin-top: 10px; color: rgb(0, 0, 0)">Edit</a>
+                        </c:if>
+                    </c:when>
+                </c:choose>
             </div>
         </div>
     </div>
