@@ -49,7 +49,11 @@
     <listener>
         <listener-class>by.epamtc.ivangavrilovich.shop.controller.listeners.SessionListener</listener-class>
     </listener>
-    
+
+    <listener>
+        <listener-class>by.epamtc.ivangavrilovich.shop.controller.listeners.ContextListener</listener-class>
+    </listener>
+
     <error-page>
         <error-code>404</error-code>
         <location>/pages/404.jsp</location>

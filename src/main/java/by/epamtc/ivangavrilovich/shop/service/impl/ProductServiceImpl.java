@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.Map;
 
 public class ProductServiceImpl implements ProductService {
     private final static Logger logger = LogManager.getLogger();
@@ -34,11 +35,39 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> viewPageProducts(int offset, int recsPerPage, String query) throws ServiceException {
+        ProductDAO dao = DAOProvider.getInstance().getProductDAOImpl();
+        List<Product> thisPageProducts;
+
+        try {
+            thisPageProducts = dao.viewPageProducts(offset, recsPerPage, query);
+        } catch (DAOException e) {
+            logger.error("Error while retrieving view page products in wrapping method", e);
+            throw new ServiceException("Error while retrieving view page products in wrapping method", e);
+        }
+        return thisPageProducts;
+    }
+
+    @Override
     public int retrieveNumberOfProducts() throws ServiceException {
         ProductDAO dao = DAOProvider.getInstance().getProductDAOImpl();
         int numberOfProducts;
         try {
             numberOfProducts = dao.numberOfProducts();
+        } catch (DAOException e) {
+            logger.error("Error while retrieving number of products", e);
+            throw new ServiceException("Error while retrieving number of products", e);
+        }
+
+        return numberOfProducts;
+    }
+
+    @Override
+    public int retrieveNumberOfProducts(String query) throws ServiceException {
+        ProductDAO dao = DAOProvider.getInstance().getProductDAOImpl();
+        int numberOfProducts;
+        try {
+            numberOfProducts = dao.numberOfProducts(query);
         } catch (DAOException e) {
             logger.error("Error while retrieving number of products", e);
             throw new ServiceException("Error while retrieving number of products", e);
@@ -91,6 +120,30 @@ public class ProductServiceImpl implements ProductService {
         } catch (DAOException e) {
             logger.error(String.format("Error while updating product by id %d", id), e);
             throw new ServiceException(String.format("Error while updating product by id %d", id), e);
+        }
+    }
+
+    @Override
+    public void submitAdminChanges(List<String> deletedNew, Map<Integer, Integer> addedStocks, List<Product> products) throws ServiceException {
+        ProductDAO dao = DAOProvider.getInstance().getProductDAOImpl();
+        boolean deletedNewBool;
+
+        try {
+            for (Product product : products) {
+                deletedNewBool = deletedNew.contains(String.valueOf(product.getProductId()));
+
+                if (product.isDeleted() != deletedNewBool) {
+                    dao.changeDelStatus(product.getProductId(), deletedNewBool);
+                }
+
+                if (addedStocks.get(product.getProductId()) != 0) {
+                    //TODO implement
+//                    dao.changeRole(user.getUserId(), roleMap.get(user.getUserId()));
+                }
+            }
+        } catch (DAOException e) {
+            logger.error("Error while submitting admin changes", e);
+            throw new ServiceException("Error while submitting admin changes", e);
         }
     }
 }

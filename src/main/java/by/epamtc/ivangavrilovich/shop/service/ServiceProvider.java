@@ -9,6 +9,7 @@ public class ServiceProvider {
     private ProductService productServiceImpl;
     private ValidationService validationServiceImpl;
     private CartService cartServiceImpl;
+    private OrderService orderServiceImpl;
 
     private final static class InstanceHolder {
         private final static ServiceProvider INSTANCE = new ServiceProvider();
@@ -20,6 +21,7 @@ public class ServiceProvider {
         productServiceImpl = new ProductServiceImpl();
         validationServiceImpl = new ValidationServiceImpl();
         cartServiceImpl = new CartServiceImpl();
+        orderServiceImpl = new OrderServiceImpl();
     }
 
     public static ServiceProvider getInstance() {
@@ -64,5 +66,13 @@ public class ServiceProvider {
 
     public void setCartServiceImpl(CartService cartServiceImpl) {
         this.cartServiceImpl = cartServiceImpl;
+    }
+
+    public OrderService getOrderServiceImpl() {
+        return orderServiceImpl;
+    }
+
+    public void setOrderServiceImpl(OrderService orderServiceImpl) {
+        this.orderServiceImpl = orderServiceImpl;
     }
 }

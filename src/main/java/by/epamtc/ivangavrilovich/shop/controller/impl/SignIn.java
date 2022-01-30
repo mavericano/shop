@@ -26,8 +26,6 @@ public class SignIn implements Command {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         User currentUser;
-//        System.out.println(email);
-//        System.out.println(password);
         try {
             currentUser = service.login(email, password);
             session.setAttribute("user", currentUser);
@@ -36,11 +34,11 @@ public class SignIn implements Command {
             }
             response.sendRedirect(request.getContextPath() + "/pages/controller?command=VIEW_HOME_PAGE");
         } catch (UserNotFoundException e) {
-            request.setAttribute("message", "No user with such email");
-            request.getRequestDispatcher("sign_in.jsp").forward(request, response);
+            request.setAttribute("message", request.getSession(true).getAttribute("emailNotFoundLabel"));
+            request.getRequestDispatcher("/pages/controller?command=VIEW_SIGN_IN").forward(request, response);
         } catch (InvalidPasswordException e) {
-            request.setAttribute("message", "Invalid password");
-            request.getRequestDispatcher("sign_in.jsp").forward(request, response);
+            request.setAttribute("message", request.getSession(true).getAttribute("invalidPasswordLabel"));
+            request.getRequestDispatcher("/pages/controller?command=VIEW_SIGN_IN").forward(request, response);
         } catch (ServiceException e) {
             logger.error("Error while signing in");
             response.sendRedirect(request.getContextPath() + "/pages/serverException.jsp");

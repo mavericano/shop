@@ -11,15 +11,16 @@
                     <ul class="nav navbar-nav">
                         <li class="nav-item" role="presentation"><a class="nav-link" href="${pageContext.request.contextPath}/pages/controller?command=VIEW_ALL_PRODUCTS">${sessionScope.gotoCatalogue}</a></li>
                     </ul>
-                    <form class="form-inline mr-auto" target="_self">
+                    <form class="form-inline mr-auto" action="${pageContext.request.contextPath}/pages/controller?command=SEARCH">
+                        <input type="hidden" name="command" value="SEARCH"/>
                         <div class="form-group"><label for="search-field"></label>
                             <div class="form-row padMar">
                                 <div class="col padMar">
                                     <div class="input-group">
                                         <div class="input-group-prepend"></div>
-                                        <input id="search-field" class="form-control autocomplete" type="text" style="margin-left: 5px; margin-top: 10px; height: 30px;">
+                                        <input id="search-field" name="searchText" class="form-control autocomplete" type="text" style="margin-left: 5px; margin-top: 10px; height: 30px;">
                                         <div class="input-group-append">
-                                            <button class="btn" type="button" style="background-color: rgb(32,143,143); margin-top: 10px; height: 30px;">
+                                            <button class="btn" type="submit" style="background-color: rgb(32,143,143); margin-top: 10px; height: 30px;">
                                                 <i class="fa fa-search" style="color: rgb(255,255,255);"></i>
                                             </button>
                                         </div>
@@ -52,20 +53,22 @@
                     </form>
                     <c:choose>
                         <c:when test="${sessionScope.user.role == 4}">
+<%--                            guest--%>
                             <span class="navbar-text">
                                 <a class="login" href="${pageContext.request.contextPath}/pages/controller?command=VIEW_SIGN_IN">${sessionScope.logInLabel}</a>
                             </span>
                             <a class="btn btn-light action-button" role="button" href="${pageContext.request.contextPath}/pages/controller?command=VIEW_REGISTER">${sessionScope.registerLabel}</a>
                         </c:when>
                         <c:when test="${sessionScope.user.role == 3}">
+<%--                            admin--%>
+                            <a href="${pageContext.request.contextPath}/pages/controller?command=VIEW_ADMIN_SCREEN" class="btn btn-light action-button" role="button"><i class="fa fa-5px fa-wrench" style="margin-left: 2px;"></i> ${sessionScope.adminScreenLabel}</a>
                             <a class="btn btn-light action-button" role="button" style="color: red; background: transparent; border: 1px solid red;" href="${pageContext.request.contextPath}/pages/controller?command=SIGN_OUT">${sessionScope.logOutLabel}</a>
-
                         </c:when>
                         <c:when test="${sessionScope.user.role == 2}">
                             <a class="btn btn-light action-button" role="button" style="color: red; background: transparent; border: 1px solid red;" href="${pageContext.request.contextPath}/pages/controller?command=SIGN_OUT">${sessionScope.logOutLabel}</a>
-
                         </c:when>
                         <c:when test="${sessionScope.user.role == 1}">
+<%--                            basic user--%>
                             <a href="${pageContext.request.contextPath}/pages/controller?command=VIEW_CART" class="btn btn-light action-button" role="button"><i class="fa fa-5px fa-shopping-cart" style="margin-left: 2px;"></i> ${sessionScope.cartLabel}</a>
                             <a class="btn btn-danger action-button" role="button" style="color: red; background: transparent; border: 1px solid red;" href="${pageContext.request.contextPath}/pages/controller?command=SIGN_OUT">${sessionScope.logOutLabel}</a>
                         </c:when>

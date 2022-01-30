@@ -18,6 +18,7 @@ public class CommandProvider {
         commands.put("REGISTER", new Register());
         commands.put("VIEW_REGISTER", new ViewRegister());
         commands.put("VIEW_HOME_PAGE", new ViewHomePage());
+        commands.put("VIEW_ADMIN_SCREEN", new ViewAdminScreen());
         commands.put("VIEW_ALL_PRODUCTS", new ViewAllProducts());
         commands.put("VIEW_SINGLE_PRODUCT", new ViewSingleProduct());
         commands.put("VIEW_CART", new ViewCart());
@@ -27,7 +28,11 @@ public class CommandProvider {
         commands.put("INCREASE_QUANTITY", new IncreaseQuantity());
         commands.put("EDIT_CURRENT_PRODUCT", new EditCurrentProduct());
         commands.put("SUBMIT_EDITING", new SubmitEditing());
+        commands.put("SUBMIT_ORDER", new SubmitOrder());
+        commands.put("SUBMIT_USER_CHANGES", new SubmitUserChanges());
+        commands.put("SUBMIT_PRODUCT_CHANGES", new SubmitProductChanges());
         commands.put("CHANGE_LANGUAGE", new ChangeLanguage());
+        commands.put("SEARCH", new Search());
         commands.put("WRONG_COMMAND", new WrongCommand());
     }
 

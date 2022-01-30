@@ -13,6 +13,7 @@ public class User implements Serializable {
     private int role;
     private String roleName;
     private boolean banned;
+    private boolean deleted;
 
     public boolean isBanned() {
         return banned;
@@ -103,5 +104,13 @@ public class User implements Serializable {
 
     public void setRole(int role) {
         this.role = role;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

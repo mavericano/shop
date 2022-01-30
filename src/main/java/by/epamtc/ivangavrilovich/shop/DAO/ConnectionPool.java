@@ -39,7 +39,6 @@ public class ConnectionPool {
         return InstanceHolder.INSTANCE;
     }
 
-    //TODO move init to controller or listeners and why
     private ConnectionPool() {
         //ResourceBundle bundle = ResourceBundle.getBundle("db.properties", new Locale("en", "US"));
         InputStream a = this.getClass().getClassLoader().getResourceAsStream(PROPERTY_FILE_NAME);
@@ -67,6 +66,7 @@ public class ConnectionPool {
             freeConnections = new ArrayBlockingQueue<>(poolSize);
             for (int i = 0; i < poolSize; i++) {
                 Connection connection = DriverManager.getConnection(url, user, password);
+                connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
                 freeConnections.add(connection);
             }
         } catch (SQLException e) {

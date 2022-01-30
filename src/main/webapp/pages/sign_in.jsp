@@ -28,7 +28,7 @@
                     <div>
                         <h3 id="heading">${sessionScope.logInLabel}:</h3>
                     </div>
-                    <input type="text" class="form-control" name="email" id="email" value="${cookie['rememberMe'].value}" placeholder="Email"/>
+                    <input type="text" class="form-control" name="email" id="email" value="<c:out value="${cookie['rememberMe'].value}"/>" placeholder="Email"/>
                     <input type="password" class="form-control" name="password" id="password" placeholder="Password" />
                     <input class="form-check-input" type="checkbox" value="rememberMe" id="flexCheckDefault" name="rememberMe">
                     <label class="form-check-label" for="flexCheckDefault">

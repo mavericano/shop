@@ -8,7 +8,11 @@ import java.util.List;
 public interface ProductDAO {
     int numberOfProducts() throws DAOException;
 
+    int numberOfProducts(String query) throws DAOException;
+
     List<Product> viewPageProducts(int offset, int recsPerPage) throws DAOException;
+
+    List<Product> viewPageProducts(int offset, int recsPerPage, String query) throws DAOException;
 
     void addProduct(Product product) throws DAOException;
     List<Product> readProducts() throws DAOException;
@@ -19,4 +23,6 @@ public interface ProductDAO {
     List<Product> findPopularProducts(int amount) throws DAOException;
 
     Product retrieveProductById(int id) throws DAOException;
+
+    void changeDelStatus(int productId, boolean newStatus) throws DAOException;
 }

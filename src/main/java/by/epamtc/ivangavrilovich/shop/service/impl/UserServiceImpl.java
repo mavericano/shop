@@ -12,6 +12,10 @@ import by.epamtc.ivangavrilovich.shop.service.interfaces.ValidationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class UserServiceImpl implements UserService {
     private final static Logger logger = LogManager.getLogger();
 
@@ -67,5 +71,89 @@ public class UserServiceImpl implements UserService {
         String storedHash = result.getPassword().substring(delimPos + 1);
         if (!passwordHash.equals(storedHash)) throw new InvalidPasswordException("Invalid password");
         return result;
+    }
+
+    @Override
+    public List<User> viewPageUsers(int offset, int recsPerPage) throws ServiceException {
+        UserDAO dao = DAOProvider.getInstance().getUserDAOImpl();
+        List<User> thisPageUsers;
+
+        try {
+            thisPageUsers = dao.viewPageUsers(offset, recsPerPage, false);
+        } catch (DAOException e) {
+            logger.error("Error while retrieving view page users in wrapping method", e);
+            throw new ServiceException("Error while retrieving view page users in wrapping method", e);
+        }
+        return thisPageUsers;
+    }
+
+    @Override
+    public List<User> viewPageUsers(int offset, int recsPerPage, boolean viewDel) throws ServiceException {
+        UserDAO dao = DAOProvider.getInstance().getUserDAOImpl();
+        List<User> thisPageUsers;
+
+        try {
+            thisPageUsers = dao.viewPageUsers(offset, recsPerPage, viewDel);
+        } catch (DAOException e) {
+            logger.error("Error while retrieving view page users in wrapping method", e);
+            throw new ServiceException("Error while retrieving view page users in wrapping method", e);
+        }
+        return thisPageUsers;
+    }
+
+    @Override
+    public int retrieveNumberOfUsers() throws ServiceException {
+        UserDAO dao = DAOProvider.getInstance().getUserDAOImpl();
+        int numberOfUsers;
+
+        try {
+            numberOfUsers = dao.numberOfUsers();
+        } catch (DAOException e) {
+            logger.error("Error while retrieving number of users in wrapping method", e);
+            throw new ServiceException("Error while retrieving number of users in wrapping method", e);
+        }
+
+        return numberOfUsers;
+    }
+
+    private Map<Integer, Integer> rolesToMap(List<String> roles) {
+        Map<Integer, Integer> result = new HashMap<>();
+        int spaceIndex;
+        for (String pair : roles) {
+            spaceIndex = pair.indexOf(" ");
+            result.put(Integer.parseInt(pair.substring(0, spaceIndex)), Integer.parseInt(pair.substring(spaceIndex + 1)));
+        }
+
+        return result;
+    }
+
+    @Override
+    public void submitAdminChanges(List<String> roleNew, List<String> bannedNew, List<String> deletedNew, List<User> users) throws ServiceException {
+        UserDAO dao = DAOProvider.getInstance().getUserDAOImpl();
+        boolean bannedNewBool;
+        boolean deletedNewBool;
+        Map<Integer, Integer> roleMap = rolesToMap(roleNew);
+
+        try {
+            for (User user : users) {
+                bannedNewBool = bannedNew.contains(String.valueOf(user.getUserId()));
+                deletedNewBool = deletedNew.contains(String.valueOf(user.getUserId()));
+
+                if (user.isBanned() != bannedNewBool) {
+                    dao.changeBannedStatus(user.getUserId(), bannedNewBool);
+                }
+
+                if (user.isDeleted() != deletedNewBool) {
+                    dao.changeDelStatus(user.getUserId(), deletedNewBool);
+                }
+
+                if (user.getRole() != roleMap.get(user.getUserId())) {
+                    dao.changeRole(user.getUserId(), roleMap.get(user.getUserId()));
+                }
+            }
+        } catch (DAOException e) {
+            logger.error("Error while submitting admin changes", e);
+            throw new ServiceException("Error while submitting admin changes", e);
+        }
     }
 }

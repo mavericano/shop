@@ -29,11 +29,11 @@ public class Register implements Command {
             service.register(email, firstPassword, secondPassword, number, role, banned);
             response.sendRedirect(request.getContextPath() + "/pages/controller?command=VIEW_HOME_PAGE");
         } catch (AlreadyRegisteredException e) {
-            request.setAttribute("message", "User with such email already registered");
-            request.getRequestDispatcher("register.jsp").forward(request, response);
+            request.setAttribute("message", request.getSession(true).getAttribute("duplicateEmailLabel"));
+            request.getRequestDispatcher("/pages/controller?command=VIEW_REGISTER").forward(request, response);
         } catch (InvalidInputsException e) {
             request.setAttribute("message", e.getMessage());
-            request.getRequestDispatcher("register.jsp").forward(request, response);
+            request.getRequestDispatcher("/pages/controller?command=VIEW_REGISTER").forward(request, response);
         } catch (ServiceException e) {
             response.sendRedirect(request.getContextPath() + "/pages/serverException.jsp");
         }

@@ -19,6 +19,7 @@ public class Product implements Serializable {
     private int fretAmount;
     private String picks;
     private boolean beltButton;
+    private boolean deleted;
 
     public Product() {
     }
@@ -222,5 +223,13 @@ public class Product implements Serializable {
 
     public void setBeltButton(boolean beltButton) {
         this.beltButton = beltButton;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }
