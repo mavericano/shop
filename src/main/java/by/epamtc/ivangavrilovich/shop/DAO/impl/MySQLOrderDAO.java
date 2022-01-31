@@ -3,7 +3,9 @@ package by.epamtc.ivangavrilovich.shop.DAO.impl;
 import by.epamtc.ivangavrilovich.shop.DAO.ConnectionPool;
 import by.epamtc.ivangavrilovich.shop.DAO.DAOProvider;
 import by.epamtc.ivangavrilovich.shop.DAO.exceptions.DAOException;
+import by.epamtc.ivangavrilovich.shop.DAO.interfaces.CartDAO;
 import by.epamtc.ivangavrilovich.shop.DAO.interfaces.OrderDAO;
+import by.epamtc.ivangavrilovich.shop.DAO.interfaces.ProductDAO;
 import by.epamtc.ivangavrilovich.shop.bean.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,12 +55,14 @@ public class MySQLOrderDAO implements OrderDAO {
     public void addOrder(Order order, List<CartedProduct> products) throws DAOException {
         Connection conn = ConnectionPool.getInstance().takeConnection();
         //TODO fix courier_id!!!
-        String sql = "INSERT INTO orders(user_id,address,price,info, courier_id) VALUES (?,?,?,?, 12)";
+        String sql = "INSERT INTO orders(user_id,address,price,info, courier_id) VALUES (?,?,?,?, 1)";
         String sqlForId = "SELECT last_insert_id();";
         String sqlForOrdersProducts = "INSERT INTO orders_products(order_id, product_id, quantity) VALUES (?,?,?)";
         String sqlForCart = "DELETE FROM cart WHERE user_id=? and product_id=?";
+        String sqlForProduct = "UPDATE products SET stock = stock-? WHERE product_id=?";
         PreparedStatement ps = null;
         PreparedStatement psForCart = null;
+        PreparedStatement psForProduct = null;
         Statement st;
         ResultSet rs = null;
         try {
@@ -73,24 +77,32 @@ public class MySQLOrderDAO implements OrderDAO {
             st = conn.createStatement();
             rs = st.executeQuery(sqlForId);
             rs.next();
-            int id = rs.getInt(1);
+            int orderId = rs.getInt(1);
 
             ps = conn.prepareStatement(sqlForOrdersProducts);
             psForCart = conn.prepareStatement(sqlForCart);
+            psForProduct = conn.prepareStatement(sqlForProduct);
             for (CartedProduct product : products) {
-                ps.setInt(1, id);
+                ps.setInt(1, orderId);
                 ps.setInt(2, product.getProduct().getProductId());
                 ps.setInt(3, product.getQuantity());
                 ps.executeUpdate();
                 psForCart.setInt(1, order.getUserId());
                 psForCart.setInt(2, product.getProduct().getProductId());
                 psForCart.executeUpdate();
+                psForProduct.setInt(1, product.getQuantity());
+                psForProduct.setInt(2, product.getProduct().getProductId());
+                psForProduct.executeUpdate();
+
                 ps.clearParameters();
                 psForCart.clearParameters();
+                psForProduct.clearParameters();
             }
             conn.commit();
         } catch (SQLException e) {
             close(rs, ps);
+            close(psForCart);
+            close(psForProduct);
             try {
                 conn.rollback();
             } catch (SQLException ex) {
@@ -173,7 +185,7 @@ public class MySQLOrderDAO implements OrderDAO {
             while (rs.next()) {
                 productId = rs.getInt("product_id");
                 quantity = rs.getInt("quantity");
-                currentProduct = DAOProvider.getInstance().getProductDAOImpl().retrieveProductById(productId);
+                currentProduct = DAOProvider.getInstance().getProductDAOImpl().retrieveProductById(productId, true);
                 result.add(new CartedProduct(currentProduct, quantity));
             }
         } catch (SQLException e) {
@@ -254,5 +266,63 @@ public class MySQLOrderDAO implements OrderDAO {
         }
 
         return numberOfOrders;
+    }
+
+    @Override
+    public void changeStatus(int orderId, int newStatus) throws DAOException {
+        Connection conn = ConnectionPool.getInstance().takeConnection();
+        String sql = "UPDATE orders SET status=? WHERE order_id = ?";
+        PreparedStatement ps = null;
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, newStatus);
+            ps.setInt(2, orderId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("Error while modifying order status", e);
+            throw new DAOException("Error while modifying order status", e);
+        } finally {
+            close(ps);
+            ConnectionPool.getInstance().returnConnection(conn);
+        }
+    }
+
+    @Override
+    public void changeAddress(int orderId, String newAddress) throws DAOException {
+        Connection conn = ConnectionPool.getInstance().takeConnection();
+        String sql = "UPDATE orders SET address=? WHERE order_id = ?";
+        PreparedStatement ps = null;
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, newAddress);
+            ps.setInt(2, orderId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("Error while modifying order address", e);
+            throw new DAOException("Error while modifying order address", e);
+        } finally {
+            close(ps);
+            ConnectionPool.getInstance().returnConnection(conn);
+        }
+    }
+
+    @Override
+    public boolean validateCartByStock(int userId) throws DAOException {
+        CartDAO cartDAO = DAOProvider.getInstance().getCartDAOImpl();
+        ProductDAO productDAO = DAOProvider.getInstance().getProductDAOImpl();
+
+        boolean fullyValid = true;
+        List<CartedProduct> productsFromCart;
+        Product productFromDB;
+        productsFromCart = cartDAO.retrieveProductsForUserById(userId);
+        for (CartedProduct product : productsFromCart) {
+            productFromDB = productDAO.retrieveProductById(product.getProduct().getProductId());
+            if (productFromDB.getStock() < product.getQuantity()) {
+                fullyValid = false;
+                cartDAO.removeProductFromUserById(userId, productFromDB.getProductId());
+            }
+        }
+
+        return fullyValid;
     }
 }

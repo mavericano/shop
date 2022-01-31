@@ -31,6 +31,7 @@ public class CommandProvider {
         commands.put("SUBMIT_ORDER", new SubmitOrder());
         commands.put("SUBMIT_USER_CHANGES", new SubmitUserChanges());
         commands.put("SUBMIT_PRODUCT_CHANGES", new SubmitProductChanges());
+        commands.put("SUBMIT_ORDER_CHANGES", new SubmitOrderChanges());
         commands.put("CHANGE_LANGUAGE", new ChangeLanguage());
         commands.put("SEARCH", new Search());
         commands.put("WRONG_COMMAND", new WrongCommand());

@@ -9,6 +9,8 @@ public interface UserService {
     void register(String email, String firstPassword, String secondPassword, String defaultAddress, int role, boolean banned) throws ServiceException, AlreadyRegisteredException, InvalidInputsException;
     User login(String email, String password) throws UserNotFoundException, InvalidPasswordException, ServiceException;
 
+    User loginFromCookies(String email, String hashedPassword) throws UserNotFoundException, InvalidPasswordException, ServiceException;
+
     List<User> viewPageUsers(int offset, int recsPerPage) throws ServiceException;
 
     List<User> viewPageUsers(int offset, int recsPerPage, boolean viewDel) throws ServiceException;

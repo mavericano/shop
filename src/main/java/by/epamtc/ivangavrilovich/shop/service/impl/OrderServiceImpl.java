@@ -15,7 +15,9 @@ import by.epamtc.ivangavrilovich.shop.service.interfaces.ValidationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrderServiceImpl implements OrderService {
     private final static Logger logger = LogManager.getLogger();
@@ -83,5 +85,53 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return numberOfOrders;
+    }
+
+    private Map<Integer, Integer> statusesToMap(List<String> statuses) {
+        Map<Integer, Integer> result = new HashMap<>();
+        int spaceIndex;
+        for (String pair : statuses) {
+            spaceIndex = pair.indexOf(" ");
+            result.put(Integer.parseInt(pair.substring(0, spaceIndex)), Integer.parseInt(pair.substring(spaceIndex + 1)));
+        }
+
+        return result;
+    }
+
+    @Override
+    public void submitAdminChanges(List<String> statusNew, Map<Integer, String> addresses, List<AdminOrder> orders) throws ServiceException {
+        OrderDAO dao = DAOProvider.getInstance().getOrderDAOImpl();
+        Map<Integer, Integer> statusMap = statusesToMap(statusNew);
+
+        try {
+            for (AdminOrder order : orders) {
+                int newStatus = statusMap.get(order.getOrder().getOrderId());
+                if (order.getOrder().getStatus() != newStatus) {
+                    dao.changeStatus(order.getOrder().getOrderId(), newStatus);
+                }
+
+                String newAddress = addresses.get(order.getOrder().getOrderId());
+                if (!order.getOrder().getAddress().equals(newAddress)) {
+                    dao.changeAddress(order.getOrder().getOrderId(), newAddress);
+                }
+            }
+        } catch (DAOException e) {
+            logger.error("Error while submitting admin changes", e);
+            throw new ServiceException("Error while submitting admin changes", e);
+        }
+    }
+
+    @Override
+    public boolean validateCartByStock(int userId) throws ServiceException {
+        OrderDAO dao = DAOProvider.getInstance().getOrderDAOImpl();
+        boolean fullyValid;
+
+        try {
+            fullyValid = dao.validateCartByStock(userId);
+        } catch (DAOException e) {
+            logger.error(String.format("Error while validating cart for user %d", userId), e);
+            throw new ServiceException(String.format("Error while validating cart for user %d", userId), e);
+        }
+        return fullyValid;
     }
 }

@@ -12,4 +12,7 @@ public interface OrderDAO {
     List<AdminOrder> viewPageAdminOrders(int offset, int recsPerPage) throws DAOException;
     List<Order> viewPageOrders(int offset, int recsPerPage) throws DAOException;
     int retrieveNumberOfOrders() throws DAOException;
+    void changeStatus(int orderId, int newStatus) throws DAOException;
+    void changeAddress(int orderId, String newAddress) throws DAOException;
+    boolean validateCartByStock(int userId) throws DAOException;
 }

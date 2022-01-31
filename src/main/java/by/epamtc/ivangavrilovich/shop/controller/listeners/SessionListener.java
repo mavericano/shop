@@ -1,6 +1,7 @@
 package by.epamtc.ivangavrilovich.shop.controller.listeners;
 
 import by.epamtc.ivangavrilovich.shop.bean.User;
+import by.epamtc.ivangavrilovich.shop.service.ServiceProvider;
 
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
@@ -17,6 +18,7 @@ public class SessionListener implements HttpSessionListener {
         user.setRole(4); // guest role id
         session.setAttribute("user", user);
         session.setAttribute("language_chosen", false);
+
     }
 
     @Override

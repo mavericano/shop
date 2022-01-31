@@ -109,6 +109,9 @@
                                                 <div class="py-2 text-uppercase">Stock</div>
                                             </th>
                                             <th scope="col" class="border-0 bg-light">
+                                                <div class="py-2 text-uppercase">Add to stock</div>
+                                            </th>
+                                            <th scope="col" class="border-0 bg-light">
                                                 <div class="py-2 text-uppercase">Deleted</div>
                                             </th>
                                         </tr>
@@ -120,7 +123,10 @@
                                                 <th scope="row" class="border-0">
                                                     <a class="text-dark d-inline-block align-middle" href="${pageContext.request.contextPath}/pages/controller?command=VIEW_SINGLE_PRODUCT&id=${product.productId}"><c:out value="${product.name}"/></a>
                                                 </th>
-                                                <td class="border-0 align-middle"><input style="width:40px;" value="0" min="0" type="number" name="${product.productId}toAddToStock"/><strong> will be added</strong></td>
+                                                <td class="border-0 align-middle"><strong><c:out value="${product.stock}"/></strong></td>
+                                                <td class="border-0 align-middle">
+                                                    <input style="width:40px;" value="0" min="0" type="number" name="${product.productId}toAddToStock"/><strong> will be added</strong>
+                                                </td>
                                                 <td class="border-0 align-middle">
                                                     <input <c:if test="${product.deleted == true}">checked</c:if> name="deleted" value="${product.productId}" type="checkbox"/>
                                                 </td>
@@ -159,9 +165,9 @@
                                             <th scope="col" class="border-0 bg-light">
                                                 <div class="py-2 text-uppercase">Status</div>
                                             </th>
-                                            <th scope="col" class="border-0 bg-light">
-                                                <div class="py-2 text-uppercase">Courier</div>
-                                            </th>
+<%--                                            <th scope="col" class="border-0 bg-light">--%>
+<%--                                                <div class="py-2 text-uppercase">Courier</div>--%>
+<%--                                            </th>--%>
                                             <th scope="col" class="border-0 bg-light">
                                                 <div class="py-2 text-uppercase">Price</div>
                                             </th>
@@ -174,23 +180,22 @@
                                         </tr>
                                         </thead>
                                         <tbody>
+                                        <c:set var="orders" scope="session" value="${requestScope.orders}"/>
                                         <c:forEach var="order" items="${requestScope.orders}">
                                             <tr>
                                                 <th scope="row" class="border-0"><c:out value="${order.user.number}"/></th>
                                                 <td class="border-0 align-middle">
-                                                    <textarea name="address${order.order.orderId}" cols="23" rows="0">
-                                                        <c:out value="${order.order.address}"/>
-                                                    </textarea>
+                                                    <textarea name="${order.order.orderId}address" cols="23" rows="0"><c:out value="${order.order.address}"/></textarea>
                                                 </td>
                                                 <td class="border-0 align-middle">
                                                     <select size="1" name="status">
-                                                        <option <c:if test="${order.order.status == 1}">selected</c:if> value="1 ${order.order.orderId}">In process</option>
-                                                        <option <c:if test="${order.order.status == 2}">selected</c:if> value="2 ${order.order.orderId}">Reviewed by admin</option>
-                                                        <option <c:if test="${order.order.status == 3}">selected</c:if> value="3 ${order.order.orderId}">In delivery</option>
-                                                        <option <c:if test="${order.order.status == 4}">selected</c:if> value="4 ${order.order.orderId}">Delivered</option>
+                                                        <option <c:if test="${order.order.status == 1}">selected</c:if> value="${order.order.orderId} 1">In process</option>
+                                                        <option <c:if test="${order.order.status == 2}">selected</c:if> value="${order.order.orderId} 2">Reviewed by admin</option>
+                                                        <option <c:if test="${order.order.status == 3}">selected</c:if> value="${order.order.orderId} 3">In delivery</option>
+                                                        <option <c:if test="${order.order.status == 4}">selected</c:if> value="${order.order.orderId} 4">Delivered</option>
                                                     </select>
                                                 </td>
-                                                <td class="border-0 align-middle"><strong>courier id?</strong></td>
+<%--                                                <td class="border-0 align-middle"><strong>courier id?</strong></td>--%>
                                                 <td class="border-0 align-middle"><strong><c:out value="${order.order.price}"/></strong></td>
                                                 <td class="border-0 align-middle"><strong><c:out value="${order.order.info}"/></strong></td>
                                                 <td class="border-0 align-middle">
@@ -200,7 +205,7 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td class="border-0 align-middle"></td>
+<%--                                                <td class="border-0 align-middle"></td>--%>
                                                 <td class="border-0 align-middle"></td>
                                                 <td class="border-0 align-middle"></td>
                                                 <td class="border-0 align-middle"></td>

@@ -35,30 +35,30 @@ public class ProductsGrid extends TagSupport {
                                             "src=\"" +
                                             product.getThumbnail() +
                                             "\"/></a></div>");
-                                    out.write("<div class=\"row\">");
-                                        out.write("<div class=\"col-8\">");
-                                            out.write("<h2><a href=\"" +
-                                                    link +
-                                                    "\">" +
-                                                    product.getName() +
-                                                    "</a></h2>");
-                                        out.write("</div>");
+                                out.write("</div>");
+
+                                out.write("<div class=\"row\">");
+                                    out.write("<div class=\"col-8\">");
+                                        out.write("<h2><a href=\"" +
+                                                link +
+                                                "\">" +
+                                                product.getName() +
+                                                "</a></h2>");
                                     out.write("</div>");
-                                    out.write("<div class=\"row\">");
-                                        out.write("<div class=\"col-12\">");
-                                            //TODO desc or replace with smth
-                                            out.write("<p class=\"product-description\">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ornare sem sed nisl dignissim, facilisis dapibus lacus vulputate. Sed lacinia lacinia magna. </p>");
-                                            out.write("<div class=\"row\">");
-                                                out.write("<div class=\"col-6\"><a role=\"button\" class=\"btn btn-light action-button\" href=\"" +
-                                                        link + "\">" +
-                                                        pageContext.getSession().getAttribute("moreButton") +
-                                                        "</a></div>");
-                                                out.write("<div class=\"col-6\">");
-                                                    out.write("<p class=\"product-price\">" +
-                                                            product.getPrice() +
-                                                            "$" +
-                                                            "</p>");
-                                                out.write("</div>");
+                                out.write("</div>");
+
+                                out.write("<div class=\"row\">");
+                                    out.write("<div class=\"col-12\">");
+                                        out.write("<div class=\"row\">");
+                                            out.write("<div class=\"col-6\"><a style=\"background: #208F8F; color: white;\" role=\"button\" class=\"btn btn-light action-button\" href=\"" +
+                                                    link + "\">" +
+                                                    pageContext.getSession().getAttribute("moreButton") +
+                                                    "</a></div>");
+                                            out.write("<div class=\"col-6\">");
+                                                out.write("<p class=\"product-price\">" +
+                                                        product.getPrice() +
+                                                        "$" +
+                                                        "</p>");
                                             out.write("</div>");
                                         out.write("</div>");
                                     out.write("</div>");

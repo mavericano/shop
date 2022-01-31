@@ -29,6 +29,7 @@ public class MySQLProductDAO implements ProductDAO {
     public static final String FRET_AMOUNT_COLUMN_NAME = "fret amount";
     public static final String PICKS_COLUMN_NAME = "picks";
     public static final String BELT_BUTTON_COLUMN_NAME = "belt button";
+    public static final String DEL_COLUMN_NAME = "del";
 
     private void close(ResultSet rs, Statement st) {
         try {
@@ -122,9 +123,13 @@ public class MySQLProductDAO implements ProductDAO {
     }
 
     @Override
-    public List<Product> viewPageProducts(int offset, int recsPerPage) throws DAOException {
+    public List<Product> viewPageProducts(int offset, int recsPerPage, boolean viewDel) throws DAOException {
         Connection conn = ConnectionPool.getInstance().takeConnection();
-        String sql = "SELECT * FROM products JOIN types ON products.type = types.type_id WHERE del=0 ORDER BY product_id LIMIT ? OFFSET ?";
+        String sql = "SELECT * FROM products JOIN types ON products.type = types.type_id ";
+        if (!viewDel) {
+            sql += "WHERE del=0 ";
+        }
+        sql += "ORDER BY product_id LIMIT ? OFFSET ?";
         PreparedStatement ps = null;
         ResultSet rs = null;
         int id;
@@ -142,6 +147,7 @@ public class MySQLProductDAO implements ProductDAO {
         int fretAmount;
         String picks;
         boolean beltButton;
+        boolean deleted;
         List<Product> products = new ArrayList<>();
         try {
             ps = conn.prepareStatement(sql);
@@ -164,7 +170,8 @@ public class MySQLProductDAO implements ProductDAO {
                 fretAmount = rs.getInt(FRET_AMOUNT_COLUMN_NAME);
                 picks = rs.getString(PICKS_COLUMN_NAME);
                 beltButton = rs.getBoolean(BELT_BUTTON_COLUMN_NAME);
-                products.add(new Product(id, thumbnail, name, price, stock, type, typeName, timesOrdered, maker, body, fret, scale, fretAmount, picks, beltButton));
+                deleted = rs.getBoolean(DEL_COLUMN_NAME);
+                products.add(new Product(id, thumbnail, name, price, stock, type, typeName, timesOrdered, maker, body, fret, scale, fretAmount, picks, beltButton, deleted));
             }
         } catch (SQLException e) {
             logger.error(String.format("Error while reading page products for offset %d recsPerPage %d", offset, recsPerPage), e);
@@ -221,7 +228,7 @@ public class MySQLProductDAO implements ProductDAO {
                 fretAmount = rs.getInt(FRET_AMOUNT_COLUMN_NAME);
                 picks = rs.getString(PICKS_COLUMN_NAME);
                 beltButton = rs.getBoolean(BELT_BUTTON_COLUMN_NAME);
-                products.add(new Product(id, thumbnail, name, price, stock, type, typeName, timesOrdered, maker, body, fret, scale, fretAmount, picks, beltButton));
+                products.add(new Product(id, thumbnail, name, price, stock, type, typeName, timesOrdered, maker, body, fret, scale, fretAmount, picks, beltButton, false));
             }
         } catch (SQLException e) {
             logger.error(String.format("Error while reading page products for offset %d recsPerPage %d", offset, recsPerPage), e);
@@ -257,78 +264,6 @@ public class MySQLProductDAO implements ProductDAO {
         } catch (SQLException e) {
             logger.error("Error while adding product", e);
             throw new DAOException("Error while adding product", e);
-        } finally {
-            close(ps);
-            ConnectionPool.getInstance().returnConnection(conn);
-        }
-    }
-
-    @Override
-    public List<Product> readProducts() throws DAOException {
-        Connection conn = ConnectionPool.getInstance().takeConnection();
-        String sql = "SELECT * FROM products JOIN types ON products.type = types.type_id WHERE del=0";
-        Statement st = null;
-        ResultSet rs = null;
-        List<Product> products = new ArrayList<>();
-        int id;
-        String thumbnail;
-        String name;
-        double price;
-        int stock;
-        int type;
-        String typeName;
-        int timesOrdered;
-        String maker;
-        String fret;
-        String body;
-        int scale;
-        int fretAmount;
-        String picks;
-        boolean beltButton;
-        try {
-            st = conn.createStatement();
-            rs = st.executeQuery(sql);
-            while (rs.next()) {
-                id = rs.getInt(PRODUCT_ID_COLUMN_NAME);
-                thumbnail = rs.getString(THUMBNAIL_COLUMN_NAME);
-                name = rs.getString(NAME_COLUMN_NAME);
-                price = rs.getFloat(PRICE_COLUMN_NAME);
-                stock = rs.getInt(STOCK_COLUMN_NAME);
-                type = rs.getInt(TYPE_COLUMN_NAME);
-                typeName = rs.getString(TYPE_NAME_COLUMN_NAME);
-                timesOrdered = rs.getInt(TIMES_ORDER_COLUMN_NAME);
-                maker = rs.getString(MAKER_COLUMN_NAME);
-                body = rs.getString(BODY_COLUMN_NAME);
-                fret = rs.getString(FRET_COLUMN_NAME);
-                scale = rs.getInt(SCALE_COLUMN_NAME);
-                fretAmount = rs.getInt(FRET_AMOUNT_COLUMN_NAME);
-                picks = rs.getString(PICKS_COLUMN_NAME);
-                beltButton = rs.getBoolean(BELT_BUTTON_COLUMN_NAME);
-                products.add(new Product(id, thumbnail, name, price, stock, type, typeName, timesOrdered, maker, body, fret, scale, fretAmount, picks, beltButton));
-            }
-        } catch (SQLException e) {
-            logger.error("Error while reading all products", e);
-            throw new DAOException("Error while reading all products", e);
-        } finally {
-            close(rs, st);
-            ConnectionPool.getInstance().returnConnection(conn);
-        }
-        return products;
-    }
-
-    @Override
-    public void modifyDelStatus(Product product, boolean newStatus) throws DAOException {
-        Connection conn = ConnectionPool.getInstance().takeConnection();
-        String sql = "UPDATE products SET del=? WHERE product_id = ?";
-        PreparedStatement ps = null;
-        try {
-            ps = conn.prepareStatement(sql);
-            ps.setBoolean(1, newStatus);
-            ps.setInt(2, product.getProductId());
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            logger.error("Error while modifying product del status", e);
-            throw new DAOException("Error while modifying product del status", e);
         } finally {
             close(ps);
             ConnectionPool.getInstance().returnConnection(conn);
@@ -432,7 +367,7 @@ public class MySQLProductDAO implements ProductDAO {
                 fretAmount = rs.getInt(FRET_AMOUNT_COLUMN_NAME);
                 picks = rs.getString(PICKS_COLUMN_NAME);
                 beltButton = rs.getBoolean(BELT_BUTTON_COLUMN_NAME);
-                products.add(new Product(id, thumbnail, name, price, stock, type, typeName, timesOrdered, maker, body, fret, scale, fretAmount, picks, beltButton));
+                products.add(new Product(id, thumbnail, name, price, stock, type, typeName, timesOrdered, maker, body, fret, scale, fretAmount, picks, beltButton, false));
             }
         } catch (SQLException e) {
             logger.error(String.format("Error while reading %d popular products", amount), e);
@@ -446,8 +381,17 @@ public class MySQLProductDAO implements ProductDAO {
 
     @Override
     public Product retrieveProductById(int id) throws DAOException {
+        return retrieveProductById(id, false);
+    }
+
+    @Override
+    public Product retrieveProductById(int id, boolean viewDel) throws DAOException {
         Connection conn = ConnectionPool.getInstance().takeConnection();
-        String sql = "SELECT * FROM products JOIN types ON products.type = types.type_id WHERE del=0 and product_id=?";
+        String sql = "SELECT * FROM products JOIN types ON products.type = types.type_id WHERE ";
+        if (!viewDel) {
+            sql += "del=0 and ";
+        }
+        sql += "product_id=?";
         PreparedStatement ps = null;
         ResultSet rs = null;
         String thumbnail;
@@ -464,6 +408,7 @@ public class MySQLProductDAO implements ProductDAO {
         int fretAmount;
         String picks;
         boolean beltButton;
+        boolean deleted;
         Product result = null;
         try {
             ps = conn.prepareStatement(sql);
@@ -484,7 +429,8 @@ public class MySQLProductDAO implements ProductDAO {
                 fretAmount = rs.getInt(FRET_AMOUNT_COLUMN_NAME);
                 picks = rs.getString(PICKS_COLUMN_NAME);
                 beltButton = rs.getBoolean(BELT_BUTTON_COLUMN_NAME);
-                result = new Product(id, thumbnail, name, price, stock, type, typeName, timesOrdered, maker, body, fret, scale, fretAmount, picks, beltButton);
+                deleted = rs.getBoolean(DEL_COLUMN_NAME);
+                result = new Product(id, thumbnail, name, price, stock, type, typeName, timesOrdered, maker, body, fret, scale, fretAmount, picks, beltButton, deleted);
             }
         } catch (SQLException e) {
             logger.error(String.format("Error while retrieving product by id %d", id), e);
@@ -520,4 +466,25 @@ public class MySQLProductDAO implements ProductDAO {
             ConnectionPool.getInstance().returnConnection(conn);
         }
     }
+
+    @Override
+    public void addStock(int productId, int toAdd) throws DAOException {
+        Connection conn = ConnectionPool.getInstance().takeConnection();
+        String sql = "UPDATE products SET stock = stock + ? WHERE product_id = ?";
+        PreparedStatement ps = null;
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, toAdd);
+            ps.setInt(2, productId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("Error while adding stock", e);
+            throw new DAOException("Error while adding stock", e);
+        } finally {
+            close(ps);
+            ConnectionPool.getInstance().returnConnection(conn);
+        }
+    }
+
+
 }

@@ -31,10 +31,10 @@ public class SubmitUserChanges implements Command {
                 new ArrayList<>() :
                 Arrays.asList(request.getParameterValues("role"));
         List<User> users = (List<User>) request.getSession(true).getAttribute("users");
-        request.getSession(true).removeAttribute("users");
 
         try {
             service.submitAdminChanges(roleNew, bannedNew, deletedNew, users);
+            request.getSession(true).removeAttribute("users");
             response.sendRedirect(request.getContextPath() + "/pages/controller?command=VIEW_ADMIN_SCREEN");
         } catch (ServiceException e) {
             logger.error("Error while submitting user changes", e);

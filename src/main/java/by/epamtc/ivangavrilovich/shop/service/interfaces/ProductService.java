@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface ProductService {
+    List<Product> viewPageProducts(int offset, int recsPerPage, boolean viewDel) throws ServiceException;
+
     //TODO add sorting if enough time
     List<Product> viewPageProducts(int offset, int recsPerPage) throws ServiceException;
 

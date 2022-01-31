@@ -18,8 +18,37 @@
     <link rel="stylesheet" href="../resources/assets/css/Header-Dark.css">
     <link rel="stylesheet" href="../resources/assets/css/Pretty-Header.css">
     <link rel="stylesheet" href="../resources/assets/css/styles.css">
+    <script src="../resources/assets/js/jquery.min.js"></script>
+    <script src="../resources/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const flag = document.querySelector('#flag');
+            if (flag.value !== '') {
+                $('#staticBackdrop').modal('show')
+            }
+        });
+    </script>
 </head>
 <body>
+<input type="hidden" id="flag" value="<c:if test="${requestScope.viewModal}">flag</c:if>"/>
+<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <c:out value="${requestScope.modalMessage}"/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Understood</button>
+            </div>
+        </div>
+    </div>
+</div>
     <jsp:include page="header.jsp"/>
     <h1 style="text-align: center">${sessionScope.popularLabel}</h1>
 <%--    <div class="container" style="height: 500px;">--%>

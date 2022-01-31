@@ -24,7 +24,7 @@ public class MySQLUserDAO implements UserDAO {
     public static final String USER_ID_COLUMN_NAME = "user_id";
     public static final String EMAIL_COLUMN_NAME = "email";
     public static final String ROLE_NAME_COLUMN_NAME = "name";
-//    public static final String DEL = "del";
+    public static final String DEL_COLUMN_NAME = "del";
 
     private void close(ResultSet rs, Statement st) {
         try {
@@ -61,11 +61,6 @@ public class MySQLUserDAO implements UserDAO {
     }
 
     @Override
-    public List<User> viewPageUsers(int offset, int recsPerPage) throws DAOException {
-        return viewPageUsers(offset, recsPerPage, false);
-    }
-
-    @Override
     public List<User> viewPageUsers(int offset, int recsPerPage, boolean viewDel) throws DAOException {
         Connection conn = ConnectionPool.getInstance().takeConnection();
         String sql = "SELECT * FROM users JOIN roles ON users.role = roles.role_id ";
@@ -82,6 +77,7 @@ public class MySQLUserDAO implements UserDAO {
         String roleName;
         int role;
         boolean banned;
+        boolean deleted;
         List<User> users = new ArrayList<>();
         try {
             ps = conn.prepareStatement(sql);
@@ -96,7 +92,8 @@ public class MySQLUserDAO implements UserDAO {
                 roleName = rs.getString(ROLE_NAME_COLUMN_NAME);
                 role = rs.getInt(ROLE_COLUMN_NAME);
                 banned = rs.getBoolean(BANNED_COLUMN_NAME);
-                users.add(new User(id, email, password, number, role, roleName, banned));
+                deleted = rs.getBoolean(DEL_COLUMN_NAME);
+                users.add(new User(id, email, password, number, role, roleName, banned, deleted));
             }
         } catch (SQLException e) {
             logger.error(String.format("Error while reading page users for offset %d recsPerPage %d", offset, recsPerPage), e);
@@ -227,64 +224,6 @@ public class MySQLUserDAO implements UserDAO {
     }
 
     @Override
-    public void updateUser(User user) throws DAOException {
-        Connection conn = ConnectionPool.getInstance().takeConnection();
-        String setExpr = buildSetExpr(user);
-        String sql = "UPDATE users SET " +
-                setExpr +
-                " WHERE user_id = ?";
-        PreparedStatement ps = null;
-        try {
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1, user.getUserId());
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            logger.error("Error while updating user", e);
-            throw new DAOException("Error while updating user", e);
-        } finally {
-            close(ps);
-            ConnectionPool.getInstance().returnConnection(conn);
-        }
-    }
-
-    @Override
-    public List<User> readUsers() throws DAOException {
-        Connection conn = ConnectionPool.getInstance().takeConnection();
-        String sql = "SELECT * FROM users JOIN roles ON users.role = roles.role_id WHERE del=0";
-        Statement st = null;
-        ResultSet rs = null;
-        List<User> users = new ArrayList<>();
-        int id;
-        String email;
-        String password;
-        String number;
-        String roleName;
-        int role;
-        boolean banned;
-        try {
-            st = conn.createStatement();
-            rs = st.executeQuery(sql);
-            while (rs.next()) {
-                id = rs.getInt(USER_ID_COLUMN_NAME);
-                email = rs.getString(EMAIL_COLUMN_NAME);
-                password = rs.getString(PASSWORD_COLUMN_NAME);
-                number = rs.getString(NUMBER_COLUMN_NAME);
-                roleName = rs.getString(ROLE_NAME_COLUMN_NAME);
-                role = rs.getInt(ROLE_COLUMN_NAME);
-                banned = rs.getBoolean(BANNED_COLUMN_NAME);
-                users.add(new User(id, email, password, number, role, roleName, banned));
-            }
-        } catch (SQLException e) {
-            logger.error("Error while reading all users", e);
-            throw new DAOException("Error while reading all users", e);
-        } finally {
-            close(rs, st);
-            ConnectionPool.getInstance().returnConnection(conn);
-        }
-        return users;
-    }
-
-    @Override
     public User readUserByEmail(String email) throws DAOException {
         Connection conn = ConnectionPool.getInstance().takeConnection();
         String sql = "SELECT * FROM users JOIN roles ON users.role = roles.role_id WHERE email=? and del=0";
@@ -296,6 +235,7 @@ public class MySQLUserDAO implements UserDAO {
         String roleName = null;
         int role = 0;
         boolean banned = false;
+
         boolean wasFound = false;
         try {
             ps = conn.prepareStatement(sql);
@@ -318,7 +258,7 @@ public class MySQLUserDAO implements UserDAO {
             ConnectionPool.getInstance().returnConnection(conn);
         }
 
-        return wasFound ? new User(id, email, password, number, role, roleName, banned) : null;
+        return wasFound ? new User(id, email, password, number, role, roleName, banned, false) : null;
     }
 
     @Override
@@ -334,6 +274,7 @@ public class MySQLUserDAO implements UserDAO {
         int role = 0;
         boolean banned = false;
         boolean wasFound = false;
+
         try {
             ps = conn.prepareStatement(sql);
             ps.setInt(1, userId);
@@ -355,7 +296,7 @@ public class MySQLUserDAO implements UserDAO {
             ConnectionPool.getInstance().returnConnection(conn);
         }
 
-        return wasFound ? new User(userId, email, password, number, role, roleName, banned) : null;
+        return wasFound ? new User(userId, email, password, number, role, roleName, banned, false) : null;
     }
 
     @Override

@@ -6,6 +6,7 @@ import by.epamtc.ivangavrilovich.shop.service.exceptions.InvalidInputsException;
 import by.epamtc.ivangavrilovich.shop.service.exceptions.ServiceException;
 
 import java.util.List;
+import java.util.Map;
 
 public interface OrderService {
 
@@ -16,4 +17,8 @@ public interface OrderService {
     List<Order> viewPageOrders(int offset, int recsPerPage) throws ServiceException;
 
     int retrieveNumberOfOrders() throws ServiceException;
+
+    void submitAdminChanges(List<String> statusNew, Map<Integer, String> addresses, List<AdminOrder> orders) throws ServiceException;
+
+    boolean validateCartByStock(int userId) throws ServiceException;
 }

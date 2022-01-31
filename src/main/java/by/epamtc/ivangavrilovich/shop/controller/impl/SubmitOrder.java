@@ -24,18 +24,25 @@ public class SubmitOrder implements Command {
         int userId = ((User) request.getSession(true).getAttribute("user")).getUserId();
         String address = request.getParameter("address");
         String info = request.getParameter("info");
-
+        boolean fullyValid;
+        request.setAttribute("viewModal", true);
         try {
-            service.submitOrder(userId, address, info);
-            //TODO add amount and stock validation
-            //TODO reduce stock
-            //TODO add redirection to successful order submission
+            fullyValid = service.validateCartByStock(userId);
+            if (fullyValid) {
+                service.submitOrder(userId, address, info);
+                request.setAttribute("modalMessage", request.getSession(true).getAttribute("successfulSubmission"));
+                request.getRequestDispatcher("/pages/controller?command=VIEW_HOME_PAGE").forward(request, response);
+            } else {
+                request.setAttribute("modalMessage", request.getSession(true).getAttribute("cartInvalid"));
+                request.getRequestDispatcher("/pages/controller?command=VIEW_CART").forward(request, response);
+            }
         } catch (InvalidInputsException e) {
             request.setAttribute("message", e.getMessage());
             request.getRequestDispatcher("/pages/controller?command=VIEW_CART").forward(request, response);
         } catch (ServiceException e) {
             logger.error("Error while submitting order", e);
-            //TODO add redirection to unsuccessful order submission
+            request.setAttribute("modalMessage", request.getSession(true).getAttribute("unsuccessfulSubmission"));
+            request.getRequestDispatcher("/pages/controller?command=VIEW_CART").forward(request, response);
         }
     }
 }

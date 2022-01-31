@@ -27,7 +27,6 @@ public class ViewAdminScreen implements Command {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.getSession(true).setAttribute("lastAction", request.getQueryString());
         if (((User)request.getSession(true).getAttribute("user")).getRole() != 3) response.sendRedirect(request.getContextPath() + "/pages/controller?command=VIEW_SIGN_IN");
-        //TODO expand
         UserService userService = ServiceProvider.getInstance().getUserServiceImpl();
         ProductService productService = ServiceProvider.getInstance().getProductServiceImpl();
         OrderService orderService = ServiceProvider.getInstance().getOrderServiceImpl();
@@ -58,9 +57,8 @@ public class ViewAdminScreen implements Command {
 
         try {
             users = userService.viewPageUsers(offsetUsers, RECS_PER_PAGE, true);
-            //TODO view del
-            products = productService.viewPageProducts(offsetProducts, RECS_PER_PAGE);
-            orders = orderService.viewPageAdminOrders(offsetProducts, RECS_PER_PAGE);
+            products = productService.viewPageProducts(offsetProducts, RECS_PER_PAGE, true);
+            orders = orderService.viewPageAdminOrders(offsetOrders, RECS_PER_PAGE);
             int numberOfUsers = userService.retrieveNumberOfUsers();
             int numberOfUserPages = (int) Math.ceil(numberOfUsers * 1.0 / RECS_PER_PAGE);
             int numberOfProducts = productService.retrieveNumberOfProducts();

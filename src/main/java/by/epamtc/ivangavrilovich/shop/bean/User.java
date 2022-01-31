@@ -34,10 +34,11 @@ public class User implements Serializable {
         this.banned = banned;
     }
 
-    public User(int userId, String email, String password, String number, int role, String roleName, boolean banned) {
+    public User(int userId, String email, String password, String number, int role, String roleName, boolean banned, boolean deleted) {
         this(email, password, number, role, banned);
         this.roleName = roleName;
         this.userId = userId;
+        this.deleted = deleted;
     }
 
     @Override

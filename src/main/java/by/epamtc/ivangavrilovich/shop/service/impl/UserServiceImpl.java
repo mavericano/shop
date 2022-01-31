@@ -74,17 +74,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> viewPageUsers(int offset, int recsPerPage) throws ServiceException {
+    public User loginFromCookies(String email, String hashedPassword) throws UserNotFoundException, InvalidPasswordException, ServiceException {
         UserDAO dao = DAOProvider.getInstance().getUserDAOImpl();
-        List<User> thisPageUsers;
-
+        User result;
         try {
-            thisPageUsers = dao.viewPageUsers(offset, recsPerPage, false);
+            result = dao.readUserByEmail(email);
+            if (result == null) {
+                throw new UserNotFoundException("No user with such email");
+            }
         } catch (DAOException e) {
-            logger.error("Error while retrieving view page users in wrapping method", e);
-            throw new ServiceException("Error while retrieving view page users in wrapping method", e);
+            logger.error("Error while fetching user by email", e);
+            throw new ServiceException("Error while fetching user by email", e);
         }
-        return thisPageUsers;
+        int delimPos = result.getPassword().lastIndexOf(":");
+        String storedHash = result.getPassword().substring(delimPos + 1);
+        if (!hashedPassword.equals(storedHash)) throw new InvalidPasswordException("Invalid password");
+        return result;
+    }
+
+    @Override
+    public List<User> viewPageUsers(int offset, int recsPerPage) throws ServiceException {
+        return viewPageUsers(offset, recsPerPage, false);
     }
 
     @Override

@@ -43,4 +43,10 @@ public class UtilityServiceImpl implements UtilityService {
     public void initConnectionPool() {
         ConnectionPool.getInstance();
     }
+
+    @Override
+    public String cropSalt(String hashWithSalt) {
+        int delimPos = hashWithSalt.lastIndexOf(":");
+        return hashWithSalt.substring(delimPos + 1);
+    }
 }

@@ -14,4 +14,6 @@ public interface UtilityService {
 
     void initConnectionPool();
     List<Product> findPopularProducts(int amount) throws ServiceException;
+
+    String cropSalt(String hashWithSalt);
 }

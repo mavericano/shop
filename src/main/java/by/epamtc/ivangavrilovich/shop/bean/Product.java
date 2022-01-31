@@ -37,7 +37,7 @@ public class Product implements Serializable {
         this.beltButton = beltButton;
     }
 
-    public Product(int productId, String thumbnail, String name, double price, int stock, int type, String typeName, int timesOrdered, String maker, String body, String fret, int scale, int fretAmount, String picks, boolean beltButton) {
+    public Product(int productId, String thumbnail, String name, double price, int stock, int type, String typeName, int timesOrdered, String maker, String body, String fret, int scale, int fretAmount, String picks, boolean beltButton, boolean deleted) {
         this.productId = productId;
         this.thumbnail = thumbnail;
         this.name = name;
@@ -53,6 +53,7 @@ public class Product implements Serializable {
         this.fretAmount = fretAmount;
         this.picks = picks;
         this.beltButton = beltButton;
+        this.deleted = deleted;
     }
 
     public Product(String thumbnail, String name, double price, int stock, int type, int timesOrdered, String maker, String body, String fret, int scale, int fretAmount, String picks, boolean beltButton) {

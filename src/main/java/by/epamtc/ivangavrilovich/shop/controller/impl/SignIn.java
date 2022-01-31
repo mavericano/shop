@@ -30,7 +30,7 @@ public class SignIn implements Command {
             currentUser = service.login(email, password);
             session.setAttribute("user", currentUser);
             if (request.getParameterValues("rememberMe") != null) {
-                handleCookies(request, response);
+                handleCookies(request, response, currentUser);
             }
             response.sendRedirect(request.getContextPath() + "/pages/controller?command=VIEW_HOME_PAGE");
         } catch (UserNotFoundException e) {
@@ -45,17 +45,30 @@ public class SignIn implements Command {
         }
     }
 
-    private void handleCookies(HttpServletRequest request, HttpServletResponse response) {
+    private void handleCookies(HttpServletRequest request, HttpServletResponse response, User currentUser) {
         Cookie[] cookies = request.getCookies();
         boolean alreadyRemembered = false;
         for (Cookie c : cookies) {
-            if (c.getName().equals("rememberMe")) {
+            if (c.getName().equals("rememberMeEmail")) {
                 alreadyRemembered = true;
+                c.setValue(currentUser.getEmail());
+                response.addCookie(c);
+            }
+            if (c.getName().equals("rememberMeHash")) {
+                alreadyRemembered = true;
+                c.setValue(ServiceProvider.getInstance().getUtilityServiceImpl().cropSalt(currentUser.getPassword()));
+                response.addCookie(c);
             }
         }
 
         if(!alreadyRemembered) {
-            response.addCookie(new Cookie("rememberMe", request.getParameter("email")));
+            Cookie c = new Cookie("rememberMeEmail", request.getParameter("email"));
+            c.setMaxAge(365*24*60*60);
+            response.addCookie(c);
+            c = new Cookie("rememberMeHash", ServiceProvider.getInstance().getUtilityServiceImpl().cropSalt(currentUser.getPassword()));
+            c.setMaxAge(365*24*60*60);
+            response.addCookie(c);
         }
+
     }
 }

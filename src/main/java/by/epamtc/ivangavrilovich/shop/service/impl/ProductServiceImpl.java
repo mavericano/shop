@@ -18,20 +18,25 @@ import java.util.Map;
 public class ProductServiceImpl implements ProductService {
     private final static Logger logger = LogManager.getLogger();
 
-    //TODO add sorting if enough time
     @Override
-    public List<Product> viewPageProducts(int offset, int recsPerPage) throws ServiceException {
+    public List<Product> viewPageProducts(int offset, int recsPerPage, boolean viewDel) throws ServiceException {
         ProductDAO dao = DAOProvider.getInstance().getProductDAOImpl();
         List<Product> thisPageProducts;
 
         try {
-            thisPageProducts = dao.viewPageProducts(offset, recsPerPage);
+            thisPageProducts = dao.viewPageProducts(offset, recsPerPage, viewDel);
         } catch (DAOException e) {
             logger.error("Error while retrieving view page products in wrapping method", e);
             throw new ServiceException("Error while retrieving view page products in wrapping method", e);
         }
 
         return thisPageProducts;
+    }
+
+    //TODO add sorting if enough time
+    @Override
+    public List<Product> viewPageProducts(int offset, int recsPerPage) throws ServiceException {
+        return viewPageProducts(offset, recsPerPage, false);
     }
 
     @Override
@@ -136,9 +141,9 @@ public class ProductServiceImpl implements ProductService {
                     dao.changeDelStatus(product.getProductId(), deletedNewBool);
                 }
 
-                if (addedStocks.get(product.getProductId()) != 0) {
-                    //TODO implement
-//                    dao.changeRole(user.getUserId(), roleMap.get(user.getUserId()));
+                int toAdd = addedStocks.get(product.getProductId());
+                if (toAdd != 0) {
+                    dao.addStock(product.getProductId(), toAdd);
                 }
             }
         } catch (DAOException e) {
