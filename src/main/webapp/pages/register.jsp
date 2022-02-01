@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="../resources/assets/css/Login-screen.css">
     <link rel="stylesheet" href="../resources/assets/css/Pretty-Header.css">
     <link rel="stylesheet" href="../resources/assets/css/styles.css">
+    <script src="../resources/assets/js/jquery.min.js"></script>
+    <script src="../resources/assets/bootstrap/js/bootstrap.min.js"></script>
     <script defer src="../resources/assets/js/validateOnRegister.js"></script>
 </head>
 
@@ -27,12 +29,11 @@
             <div class="col">
                 <div class="login-one-ico"><i class="fa fa-pencil" id="lockico" style="color: rgb(38, 157, 157);"></i></div>
                 <h3 id="heading" style="margin: 10px;">${sessionScope.registerLabel}:</h3>
-                <input type="text" class="form-control" name="number" id="number" placeholder="Phone number" />
-                <input type="text" class="form-control" name="email" id="email" placeholder="Email" />
+                <input type="text" class="form-control" name="number" id="number" placeholder="${sessionScope.numberLabel}" />
+                <input type="text" class="form-control" name="email" id="email" placeholder="${sessionScope.emailLabel}" />
                 <div class="form-group">
-                    <div></div>
-                    <input type="password" class="form-control" name="password" id="password" placeholder="Password" />
-                    <input type="password" class="form-control" name="second-password" id="second-password" placeholder="Confirm password" />
+                    <input type="password" class="form-control" name="password" id="password" placeholder="${sessionScope.passwordLabel}" />
+                    <input type="password" class="form-control" name="second-password" id="second-password" placeholder="${sessionScope.confirmPasswordLabel}" />
                     <button class="btn btn-primary" id="button" style="background-color: rgb(38, 157, 157); margin-top: 10px;" type="submit">${sessionScope.registerLabel}</button>
                     <a class="btn btn-primary" id="button" href="${pageContext.request.contextPath}/pages/controller?command=VIEW_HOME_PAGE" style="background-color: rgb(255, 255, 255); margin-top: 10px; color: rgb(0, 0, 0)" >${sessionScope.cancelLabel}</a>
                     <a id="error" style="color: salmon; font-size: 12px;">

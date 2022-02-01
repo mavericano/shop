@@ -10,17 +10,15 @@ public class Order implements Serializable {
     private double price;
     private String info;
     private int status;
-    private int courierId;
 
     public Order() {
     }
 
-    public Order(int orderId, int userId, String address, int status, int courierId, double price, String info) {
+    public Order(int orderId, int userId, String address, int status, double price, String info) {
         this.orderId = orderId;
         this.userId = userId;
         this.address = address;
         this.status = status;
-        this.courierId = courierId;
         this.price = price;
         this.info = info;
     }
@@ -37,12 +35,12 @@ public class Order implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return orderId == order.orderId && userId == order.userId && Double.compare(order.price, price) == 0 && status == order.status && courierId == order.courierId && Objects.equals(address, order.address) && Objects.equals(info, order.info);
+        return orderId == order.orderId && userId == order.userId && Double.compare(order.price, price) == 0 && status == order.status && Objects.equals(address, order.address) && Objects.equals(info, order.info);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(orderId, userId, address, price, info, status, courierId);
+        return Objects.hash(orderId, userId, address, price, info, status);
     }
 
     @Override
@@ -54,7 +52,6 @@ public class Order implements Serializable {
                 ", price=" + price +
                 ", info='" + info + '\'' +
                 ", statusId=" + status +
-                ", courierId=" + courierId +
                 '}';
     }
 
@@ -104,13 +101,5 @@ public class Order implements Serializable {
 
     public void setStatus(int status) {
         this.status = status;
-    }
-
-    public int getCourierId() {
-        return courierId;
-    }
-
-    public void setCourierId(int courierId) {
-        this.courierId = courierId;
     }
 }

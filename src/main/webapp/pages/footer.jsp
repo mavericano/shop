@@ -34,5 +34,3 @@
         </div>
     </footer>
 </div>
-<script src="../resources/assets/js/jquery.min.js"></script>
-<script src="../resources/assets/bootstrap/js/bootstrap.min.js"></script>

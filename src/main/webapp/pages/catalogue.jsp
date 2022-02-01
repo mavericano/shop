@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="../resources/assets/css/Header-Dark.css">
     <link rel="stylesheet" href="../resources/assets/css/Pretty-Header.css">
     <link rel="stylesheet" href="../resources/assets/css/styles.css">
+    <script src="../resources/assets/js/jquery.min.js"></script>
+    <script src="../resources/assets/bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
     <jsp:include page="header.jsp"/>

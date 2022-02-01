@@ -17,7 +17,8 @@
     <link rel="stylesheet" href="../resources/assets/css/Login-screen.css">
     <link rel="stylesheet" href="../resources/assets/css/Pretty-Header.css">
     <link rel="stylesheet" href="../resources/assets/css/styles.css">
-
+    <script src="../resources/assets/js/jquery.min.js"></script>
+    <script src="../resources/assets/bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
     <div id="login-one" class="login-one" style="height: auto">

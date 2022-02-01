@@ -6,8 +6,13 @@ import by.epamtc.ivangavrilovich.shop.bean.Product;
 import java.util.List;
 
 public interface ProductDAO {
+    int numberOfProducts(int type) throws DAOException;
+
     int numberOfProducts() throws DAOException;
     int numberOfProducts(String query) throws DAOException;
+
+    List<Product> viewPageProducts(int offset, int recsPerPage, int type) throws DAOException;
+
     List<Product> viewPageProducts(int offset, int recsPerPage, boolean viewDel) throws DAOException;
     List<Product> viewPageProducts(int offset, int recsPerPage, String query) throws DAOException;
     //TODO implement

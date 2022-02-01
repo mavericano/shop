@@ -35,7 +35,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                <h5 class="modal-title" id="staticBackdropLabel">${sessionScope.modalTitle}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -44,17 +44,13 @@
                 <c:out value="${requestScope.modalMessage}"/>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Understood</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">${sessionScope.confirmModalLabel}</button>
             </div>
         </div>
     </div>
 </div>
     <jsp:include page="header.jsp"/>
     <h1 style="text-align: center">${sessionScope.popularLabel}</h1>
-<%--    <div class="container" style="height: 500px;">--%>
-<%--        <c:out value="${sessionScope.user}"/><br/>--%>
-<%--        <c:out value="${sessionScope.popularProducts}"/>--%>
-<%--    </div><br/>--%>
     <ct:productsGrid products="${sessionScope.popularProducts}"/>
     <jsp:include page="footer.jsp"/>
 </body>

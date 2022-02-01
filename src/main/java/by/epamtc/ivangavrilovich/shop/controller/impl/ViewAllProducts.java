@@ -18,6 +18,7 @@ public class ViewAllProducts implements Command {
     private final static int RECS_PER_PAGE = 9;
     private final static Logger logger = LogManager.getLogger();
     public static final String PAGES_CONTROLLER_COMMAND_VIEW_ALL_PRODUCTS_PAGE = "/pages/controller?command=VIEW_ALL_PRODUCTS&page=";
+    public static final String PAGES_CONTROLLER_COMMAND_VIEW_ALL_PRODUCTS_PAGE_TYPE = "/pages/controller?command=VIEW_ALL_PRODUCTS&type=";
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -31,17 +32,33 @@ public class ViewAllProducts implements Command {
         request.setAttribute("page", page);
         int offset = (Integer.parseInt(page) - 1) * RECS_PER_PAGE;
 
+        String type = request.getParameter("type");
+        boolean showType = type != null;
+        List<Product> products;
+        int numberOfProducts;
         try {
-            List<Product> products = service.viewPageProducts(offset, RECS_PER_PAGE);
-            int numberOfProducts = service.retrieveNumberOfProducts();
+            if (showType) {
+                int typeInt = Integer.parseInt(type);
+                products = service.viewPageProducts(offset, RECS_PER_PAGE, typeInt);
+                numberOfProducts = service.retrieveNumberOfProducts(typeInt);
+                request.setAttribute("path", createPathForType(type));
+            } else {
+                products = service.viewPageProducts(offset, RECS_PER_PAGE);
+                numberOfProducts = service.retrieveNumberOfProducts();
+                request.setAttribute("path", PAGES_CONTROLLER_COMMAND_VIEW_ALL_PRODUCTS_PAGE);
+            }
+
             int numberOfPages = (int) Math.ceil(numberOfProducts * 1.0 / RECS_PER_PAGE);
             request.setAttribute("products", products);
             request.setAttribute("numberOfPages", numberOfPages);
-            request.setAttribute("path", PAGES_CONTROLLER_COMMAND_VIEW_ALL_PRODUCTS_PAGE);
             request.getRequestDispatcher("catalogue.jsp").forward(request, response);
         } catch (ServiceException e) {
             logger.error("Error while retrieving all products with wrap", e);
             response.sendRedirect(request.getContextPath() + "/pages/serverException.jsp");
         }
+    }
+
+    private String createPathForType(String type) {
+        return PAGES_CONTROLLER_COMMAND_VIEW_ALL_PRODUCTS_PAGE_TYPE + type + "&page=";
     }
 }

@@ -54,8 +54,7 @@ public class MySQLOrderDAO implements OrderDAO {
     @Override
     public void addOrder(Order order, List<CartedProduct> products) throws DAOException {
         Connection conn = ConnectionPool.getInstance().takeConnection();
-        //TODO fix courier_id!!!
-        String sql = "INSERT INTO orders(user_id,address,price,info, courier_id) VALUES (?,?,?,?, 1)";
+        String sql = "INSERT INTO orders(user_id,address,price,info) VALUES (?,?,?,?)";
         String sqlForId = "SELECT last_insert_id();";
         String sqlForOrdersProducts = "INSERT INTO orders_products(order_id, product_id, quantity) VALUES (?,?,?)";
         String sqlForCart = "DELETE FROM cart WHERE user_id=? and product_id=?";
@@ -131,7 +130,6 @@ public class MySQLOrderDAO implements OrderDAO {
         int userId;
         String address;
         int statusId;
-        int courierId;
         double price;
         String info;
 
@@ -149,10 +147,9 @@ public class MySQLOrderDAO implements OrderDAO {
                 userId = rs.getInt("user_id");
                 address = rs.getString("address");
                 statusId = rs.getInt("status");
-                courierId = rs.getInt("courier_id");
                 price = rs.getFloat("price");
                 info = rs.getString("info");
-                order = new Order(orderId, userId, address, statusId, courierId, price, info);
+                order = new Order(orderId, userId, address, statusId, price, info);
                 user = DAOProvider.getInstance().getUserDAOImpl().readUserById(userId);
                 orderedProducts = readProductsForOrderById(orderId, conn);
                 orders.add(new AdminOrder(order, user, orderedProducts));
@@ -208,7 +205,6 @@ public class MySQLOrderDAO implements OrderDAO {
         int userId;
         String address;
         int statusId;
-        int courierId;
         double price;
         String info;
 
@@ -223,11 +219,10 @@ public class MySQLOrderDAO implements OrderDAO {
                 userId = rs.getInt("user_id");
                 address = rs.getString("address");
                 statusId = rs.getInt("status");
-                courierId = rs.getInt("courier_id");
                 price = rs.getFloat("price");
                 info = rs.getString("info");
 
-                orders.add(new Order(orderId, userId, address, statusId, courierId, price, info));
+                orders.add(new Order(orderId, userId, address, statusId, price, info));
             }
         } catch (SQLException e) {
             logger.error(String.format("Error while reading page products for offset %d recsPerPage %d", offset, recsPerPage), e);

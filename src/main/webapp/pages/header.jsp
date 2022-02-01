@@ -4,11 +4,20 @@
     <div class="header-dark">
         <nav class="navbar navbar-dark navbar-expand-lg navigation-clean-search" style="background-color: #5b5b5b;">
             <div class="container"><a class="navbar-brand" href="${pageContext.request.contextPath}/pages/controller?command=VIEW_HOME_PAGE">SoundWave</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse"
-                     id="navcol-1">
-                    <ul class="nav navbar-nav">
-                        <li class="nav-item" role="presentation"><a class="nav-link" href="${pageContext.request.contextPath}/pages/controller?command=VIEW_ALL_PRODUCTS">${sessionScope.gotoCatalogue}</a></li>
-                    </ul>
+                <div class="collapse navbar-collapse" id="navcol-1">
+                    <div class="dropdown nav-item" role="presentation">
+                        <a class="nav-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+                            ${sessionScope.gotoCatalogue}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="${pageContext.request.contextPath}/pages/controller?command=VIEW_ALL_PRODUCTS">${sessionScope.allProductsLabel}</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="${pageContext.request.contextPath}/pages/controller?command=VIEW_ALL_PRODUCTS&type=1">${sessionScope.electroLabel}</a>
+                            <a class="dropdown-item" href="${pageContext.request.contextPath}/pages/controller?command=VIEW_ALL_PRODUCTS&type=2">${sessionScope.acousticLabel}</a>
+                            <a class="dropdown-item" href="${pageContext.request.contextPath}/pages/controller?command=VIEW_ALL_PRODUCTS&type=3">${sessionScope.classicLabel}</a>
+                            <a class="dropdown-item" href="${pageContext.request.contextPath}/pages/controller?command=VIEW_ALL_PRODUCTS&type=4">${sessionScope.ukuleleLabel}</a>
+                        </div>
+                    </div>
                     <form class="form-inline mr-auto" action="${pageContext.request.contextPath}/pages/controller?command=SEARCH">
                         <input type="hidden" name="command" value="SEARCH"/>
                         <div class="form-group"><label for="search-field"></label>
@@ -76,5 +85,3 @@
         </nav>
     </div>
 </div>
-<script src="../resources/assets/js/jquery.min.js"></script>
-<script src="../resources/assets/bootstrap/js/bootstrap.min.js"></script>

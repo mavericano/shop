@@ -66,6 +66,35 @@ public class MySQLProductDAO implements ProductDAO {
     }
 
     @Override
+    public int numberOfProducts(int type) throws DAOException {
+        Connection conn = ConnectionPool.getInstance().takeConnection();
+        String sql = "SELECT count(*) FROM products WHERE del=0 and type=?";
+        int numberOfProducts;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, type);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                numberOfProducts = rs.getInt(1);
+            } else {
+                logger.error("Result set for number of products is empty");
+                throw new DAOException("Result set for number of products is empty");
+            }
+        } catch (SQLException e) {
+            logger.error("Error while reading number of products", e);
+            throw new DAOException("Error while reading number of products", e);
+        } finally {
+            close(rs, ps);
+            ConnectionPool.getInstance().returnConnection(conn);
+        }
+
+        return numberOfProducts;
+    }
+
+    @Override
     public int numberOfProducts() throws DAOException {
         Connection conn = ConnectionPool.getInstance().takeConnection();
         String sql = "SELECT count(*) FROM products WHERE del=0";
@@ -120,6 +149,63 @@ public class MySQLProductDAO implements ProductDAO {
         }
 
         return numberOfProducts;
+    }
+
+    @Override
+    public List<Product> viewPageProducts(int offset, int recsPerPage, int type) throws DAOException {
+        Connection conn = ConnectionPool.getInstance().takeConnection();
+        String sql = "SELECT * FROM products JOIN types ON products.type = types.type_id WHERE del=0 and type=? ORDER BY product_id LIMIT ? OFFSET ?";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int id;
+        String thumbnail;
+        String name;
+        double price;
+        int stock;
+        String typeName;
+        int timesOrdered;
+        String maker;
+        String fret;
+        String body;
+        int scale;
+        int fretAmount;
+        String picks;
+        boolean beltButton;
+        boolean deleted;
+        List<Product> products = new ArrayList<>();
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, type);
+            ps.setInt(2, recsPerPage);
+            ps.setInt(3, offset);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                id = rs.getInt(PRODUCT_ID_COLUMN_NAME);
+                thumbnail = rs.getString(THUMBNAIL_COLUMN_NAME);
+                name = rs.getString(NAME_COLUMN_NAME);
+                price = rs.getFloat(PRICE_COLUMN_NAME);
+                stock = rs.getInt(STOCK_COLUMN_NAME);
+                typeName = rs.getString(TYPE_NAME_COLUMN_NAME);
+                timesOrdered = rs.getInt(TIMES_ORDER_COLUMN_NAME);
+                maker = rs.getString(MAKER_COLUMN_NAME);
+                body = rs.getString(BODY_COLUMN_NAME);
+                fret = rs.getString(FRET_COLUMN_NAME);
+                scale = rs.getInt(SCALE_COLUMN_NAME);
+                fretAmount = rs.getInt(FRET_AMOUNT_COLUMN_NAME);
+                picks = rs.getString(PICKS_COLUMN_NAME);
+                beltButton = rs.getBoolean(BELT_BUTTON_COLUMN_NAME);
+                deleted = rs.getBoolean(DEL_COLUMN_NAME);
+                products.add(new Product(id, thumbnail, name, price, stock, type, typeName, timesOrdered, maker, body, fret, scale, fretAmount, picks, beltButton, deleted));
+            }
+        } catch (SQLException e) {
+            logger.error(String.format("Error while reading page products for offset %d recsPerPage %d type %d", offset, recsPerPage, type), e);
+            throw new DAOException(String.format("Error while reading page products for offset %d recsPerPage %d type %d", offset, recsPerPage, type), e);
+        } finally {
+            close(rs, ps);
+            ConnectionPool.getInstance().returnConnection(conn);
+        }
+
+        return products;
     }
 
     @Override
