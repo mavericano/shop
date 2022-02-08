@@ -12,6 +12,8 @@ import java.util.List;
 
 public class ProductsGrid extends TagSupport {
     private final static String PATH_PRODUCT = "/pages/controller?command=VIEW_SINGLE_PRODUCT&id=";
+    private final static String PATH_IMAGES = "/img/";
+    //TODO fix, Tomcat9 issue
     private final static Logger logger = LogManager.getLogger();
     private List<Product> products;
 
@@ -33,7 +35,7 @@ public class ProductsGrid extends TagSupport {
                                             link +
                                             "\"><img " +
                                             "src=\"" +
-                                            product.getThumbnail() +
+                                            PATH_IMAGES + product.getThumbnail() +
                                             "\"/></a></div>");
                                 out.write("</div>");
 
@@ -57,8 +59,7 @@ public class ProductsGrid extends TagSupport {
                                             out.write("<div class=\"col-6\">");
                                                 out.write("<p class=\"product-price\">" +
                                                         product.getPrice() +
-                                                        "$" +
-                                                        "</p>");
+                                                        "<i class=\"fa fa-dollar\"></i></p>");
                                             out.write("</div>");
                                         out.write("</div>");
                                     out.write("</div>");

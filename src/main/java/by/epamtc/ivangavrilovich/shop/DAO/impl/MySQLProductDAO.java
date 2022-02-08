@@ -376,6 +376,7 @@ public class MySQLProductDAO implements ProductDAO {
     }
 
     private void merge(Product current, Product changed) {
+        current.setThumbnail(changed.getThumbnail());
         current.setName(changed.getName());
         current.setPrice(changed.getPrice());
         current.setMaker(changed.getMaker());

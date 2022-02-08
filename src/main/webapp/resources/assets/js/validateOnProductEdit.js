@@ -5,7 +5,6 @@ const body = document.querySelector('#body');
 const fret = document.querySelector('#fret');
 const scale = document.querySelector('#scale');
 const fretAmount = document.querySelector('#fretAmount');
-const beltButton = document.querySelector('#beltButton');
 const price = document.querySelector('#price');
 const formInputs = document.querySelectorAll('.to-validate');
 
@@ -23,6 +22,10 @@ form.onsubmit = function () {
         return false;
     }
 
+    valid(name, error, '');
+    valid(body, error, '');
+    valid(fret, error, '');
+
     if (!validateNumber(scale)) {
         notValid(scale, error, 'Scale must be a number');
         return false;
@@ -35,13 +38,6 @@ form.onsubmit = function () {
         return false;
     } else {
         valid(fretAmount, error, '');
-    }
-
-    if (!validateBeltButton()) {
-        notValid(beltButton, error, '"Belt button" must contain either "yes" or "no"');
-        return false;
-    } else {
-        valid(beltButton, error, '');
     }
 
     if (!validateFloat(price)) {
@@ -67,10 +63,6 @@ function valid (inp, el, mess) {
 
 function validateNumber(inp) {
     return /^\d+$/.test(inp.value);
-}
-
-function validateBeltButton() {
-    return beltButton.value === 'yes' || beltButton.value === 'no';
 }
 
 function validateFloat(inp) {

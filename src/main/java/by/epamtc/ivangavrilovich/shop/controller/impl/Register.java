@@ -11,6 +11,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class Register implements Command {
     @Override
@@ -37,5 +39,10 @@ public class Register implements Command {
         } catch (ServiceException e) {
             response.sendRedirect(request.getContextPath() + "/pages/serverException.jsp");
         }
+    }
+
+    @Override
+    public List<Integer> getAppropriateRoles() {
+        return Arrays.asList(4);
     }
 }

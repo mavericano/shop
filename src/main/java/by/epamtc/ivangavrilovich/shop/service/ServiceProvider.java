@@ -4,16 +4,13 @@ import by.epamtc.ivangavrilovich.shop.service.impl.*;
 import by.epamtc.ivangavrilovich.shop.service.interfaces.*;
 
 public class ServiceProvider {
+    private final static ServiceProvider INSTANCE = new ServiceProvider();
     private UserService userServiceImpl;
     private UtilityService utilityServiceImpl;
     private ProductService productServiceImpl;
     private ValidationService validationServiceImpl;
     private CartService cartServiceImpl;
     private OrderService orderServiceImpl;
-
-    private final static class InstanceHolder {
-        private final static ServiceProvider INSTANCE = new ServiceProvider();
-    }
 
     private ServiceProvider() {
         userServiceImpl = new UserServiceImpl();
@@ -25,7 +22,7 @@ public class ServiceProvider {
     }
 
     public static ServiceProvider getInstance() {
-        return InstanceHolder.INSTANCE;
+        return INSTANCE;
     }
 
     public UserService getUserServiceImpl() {

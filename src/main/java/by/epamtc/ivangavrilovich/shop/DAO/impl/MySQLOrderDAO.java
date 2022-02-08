@@ -59,9 +59,11 @@ public class MySQLOrderDAO implements OrderDAO {
         String sqlForOrdersProducts = "INSERT INTO orders_products(order_id, product_id, quantity) VALUES (?,?,?)";
         String sqlForCart = "DELETE FROM cart WHERE user_id=? and product_id=?";
         String sqlForProduct = "UPDATE products SET stock = stock-? WHERE product_id=?";
+        String sqlForProductPop = "UPDATE products SET `times ordered` = `times ordered`+? WHERE product_id=?";
         PreparedStatement ps = null;
         PreparedStatement psForCart = null;
         PreparedStatement psForProduct = null;
+        PreparedStatement psForProductPop = null;
         Statement st;
         ResultSet rs = null;
         try {
@@ -81,6 +83,7 @@ public class MySQLOrderDAO implements OrderDAO {
             ps = conn.prepareStatement(sqlForOrdersProducts);
             psForCart = conn.prepareStatement(sqlForCart);
             psForProduct = conn.prepareStatement(sqlForProduct);
+            psForProductPop = conn.prepareStatement(sqlForProductPop);
             for (CartedProduct product : products) {
                 ps.setInt(1, orderId);
                 ps.setInt(2, product.getProduct().getProductId());
@@ -89,13 +92,19 @@ public class MySQLOrderDAO implements OrderDAO {
                 psForCart.setInt(1, order.getUserId());
                 psForCart.setInt(2, product.getProduct().getProductId());
                 psForCart.executeUpdate();
+
                 psForProduct.setInt(1, product.getQuantity());
                 psForProduct.setInt(2, product.getProduct().getProductId());
                 psForProduct.executeUpdate();
 
+                psForProductPop.setInt(1, product.getQuantity());
+                psForProductPop.setInt(2, product.getProduct().getProductId());
+                psForProductPop.executeUpdate();
+
                 ps.clearParameters();
                 psForCart.clearParameters();
                 psForProduct.clearParameters();
+                psForProductPop.clearParameters();
             }
             conn.commit();
         } catch (SQLException e) {

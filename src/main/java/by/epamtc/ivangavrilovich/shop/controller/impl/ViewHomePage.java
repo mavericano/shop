@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class ViewHomePage implements Command {
@@ -28,5 +29,10 @@ public class ViewHomePage implements Command {
             response.sendRedirect(request.getContextPath() + "/pages/serverException.jsp");
         }
         response.sendRedirect(request.getContextPath() + "/pages/main.jsp");
+    }
+
+    @Override
+    public List<Integer> getAppropriateRoles() {
+        return Arrays.asList(1, 2, 3, 4);
     }
 }

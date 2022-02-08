@@ -23,7 +23,6 @@ public class SessionFilter implements Filter {
         HttpSession session = req.getSession(true);
         Locale locale;
         if (!(boolean)session.getAttribute("language_chosen")) {
-            System.out.println("detecting");
             //TODO replace with props
             List<Locale> supportedLocales = new ArrayList<>();
             supportedLocales.add(Locale.US);
@@ -53,14 +52,17 @@ public class SessionFilter implements Filter {
         Cookie[] cookies = req.getCookies();
         String email = null;
         String hash = null;
-        for (Cookie c : cookies) {
-            if (c.getName().equals("rememberMeEmail")) {
-                email = c.getValue();
-            }
-            if (c.getName().equals("rememberMeHash")) {
-                hash = c.getValue();
+        if (cookies != null) {
+            for (Cookie c : cookies) {
+                if (c.getName().equals("rememberMeEmail")) {
+                    email = c.getValue();
+                }
+                if (c.getName().equals("rememberMeHash")) {
+                    hash = c.getValue();
+                }
             }
         }
+
         if (!triedToLogIn && user.getRole() == 4 && email != null && hash != null) {
             req.getSession(true).setAttribute("triedToLogIn", true);
             try {
@@ -70,6 +72,7 @@ public class SessionFilter implements Filter {
                 logger.error("Error while logging in from cookies", e);
             }
         }
+
         chain.doFilter(request, response);
     }
 

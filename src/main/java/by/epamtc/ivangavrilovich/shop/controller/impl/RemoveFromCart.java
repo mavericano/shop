@@ -12,6 +12,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class RemoveFromCart implements Command {
     private final static Logger logger = LogManager.getLogger();
@@ -22,10 +24,15 @@ public class RemoveFromCart implements Command {
         int userId = ((User)request.getSession(true).getAttribute("user")).getUserId();
         try {
             service.removeItemFromCart(userId, productId);
-            response.sendRedirect(request.getContextPath() + "/pages/controller?command=VIEW_CART");
+            response.sendRedirect(request.getContextPath() + "/pages/controller?" + request.getSession(true).getAttribute("lastAction"));
         } catch (ServiceException e) {
             logger.error("Error while removing from cart", e);
             response.sendRedirect(request.getContextPath() + "/pages/serverException.jsp");
         }
+    }
+
+    @Override
+    public List<Integer> getAppropriateRoles() {
+        return Arrays.asList(1);
     }
 }

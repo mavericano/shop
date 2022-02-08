@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class ViewCart implements Command {
@@ -46,5 +47,10 @@ public class ViewCart implements Command {
             logger.error("Error while viewing cart", e);
             response.sendRedirect(request.getContextPath() + "/pages/serverException.jsp");
         }
+    }
+
+    @Override
+    public List<Integer> getAppropriateRoles() {
+        return Arrays.asList(1);
     }
 }

@@ -124,9 +124,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void updateProduct(int id, String name, String maker, String body, String fret, String scale, String fretAmount, String picks, String beltButton, String price) throws ServiceException, InvalidInputsException {
+    public void updateProduct(int id, String thumbnail, String name, String maker, String body, String fret, String scale, String fretAmount, String picks, boolean beltButton, String price) throws ServiceException, InvalidInputsException {
         ValidationService validator = ServiceProvider.getInstance().getValidationServiceImpl();
-        if (!validator.validateEmptiness(name, maker, body, fret, scale, fretAmount, picks, beltButton, price)) {
+        if (!validator.validateEmptiness(name, maker, body, fret, scale, fretAmount, picks, price)) {
             throw new InvalidInputsException("One of fields is empty");
         }
         if (!validator.validateInt(scale)) {
@@ -135,18 +135,14 @@ public class ProductServiceImpl implements ProductService {
         if (!validator.validateInt(fretAmount)) {
             throw new InvalidInputsException("Fret amount must be a number");
         }
-        if (!validator.validateBeltButton(beltButton)) {
-            throw new InvalidInputsException("\"Belt button\" must contain either \"yes\" or \"no\"");
-        }
         if (!validator.validateFloat(price)) {
             throw new InvalidInputsException("Price must be a number (x.xx or xxx)");
         }
 
         int scaleInt = Integer.parseInt(scale);
         int amountInt = Integer.parseInt(fretAmount);
-        boolean beltButtonBool = "yes".equals(beltButton);
         double priceDouble = Double.parseDouble(price);
-        Product product = new Product(id, name, priceDouble, maker, body, fret, scaleInt, amountInt, picks, beltButtonBool);
+        Product product = new Product(id, thumbnail, name, priceDouble, maker, body, fret, scaleInt, amountInt, picks, beltButton);
         ProductDAO dao = DAOProvider.getInstance().getProductDAOImpl();
         try {
             dao.updateProduct(product);

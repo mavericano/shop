@@ -41,4 +41,9 @@ public class SubmitUserChanges implements Command {
             response.sendRedirect(request.getContextPath() + "/pages/serverException.jsp");
         }
     }
+
+    @Override
+    public List<Integer> getAppropriateRoles() {
+        return Arrays.asList(3);
+    }
 }

@@ -14,6 +14,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class ViewSingleProduct implements Command {
     private final static Logger logger = LogManager.getLogger();
@@ -36,5 +38,10 @@ public class ViewSingleProduct implements Command {
             logger.error("Error while retrieving all products with wrap", e);
             response.sendRedirect(request.getContextPath() + "/pages/serverException.jsp");
         }
+    }
+
+    @Override
+    public List<Integer> getAppropriateRoles() {
+        return Arrays.asList(1, 2, 3, 4);
     }
 }

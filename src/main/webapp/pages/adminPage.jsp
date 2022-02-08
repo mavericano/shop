@@ -136,6 +136,35 @@
                                         </c:forEach>
                                         </tbody>
                                     </table>
+                                    <!-- Button trigger modal -->
+                                    <button type="button" style="background: #208F8F; color: white;" class="btn btn-light action-button" data-toggle="modal" data-target="#modalAddProduct">
+                                        Add product
+                                    </button>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="modalAddProduct" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="staticBackdropLabel">Add product</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form method="POST" action="pages/controller?command=ADD_PRODUCT">
+<%--                                                        <input type="text"--%>
+                                                        in progress
+                                                    </form>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary">Understood</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <button type="submit" style="background: #208F8F; color: white;" class="btn btn-light action-button">Save</button>
                                 </form>
                             </div>

@@ -1,18 +1,18 @@
 package by.epamtc.ivangavrilovich.shop.controller;
 
-import by.epamtc.ivangavrilovich.shop.service.ServiceProvider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.*;
 
+@MultipartConfig
 public class Controller extends HttpServlet {
     private static final Logger logger = LogManager.getLogger();
 
     public void init() {
-
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -29,6 +29,5 @@ public class Controller extends HttpServlet {
     }
 
     public void destroy() {
-
     }
 }

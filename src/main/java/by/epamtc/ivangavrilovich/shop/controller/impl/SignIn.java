@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class SignIn implements Command {
     private final static Logger logger = LogManager.getLogger();
@@ -43,6 +45,11 @@ public class SignIn implements Command {
             logger.error("Error while signing in");
             response.sendRedirect(request.getContextPath() + "/pages/serverException.jsp");
         }
+    }
+
+    @Override
+    public List<Integer> getAppropriateRoles() {
+        return Arrays.asList(1, 2, 3, 4);
     }
 
     private void handleCookies(HttpServletRequest request, HttpServletResponse response, User currentUser) {

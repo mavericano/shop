@@ -14,6 +14,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ConnectionPool {
+    private final static ConnectionPool INSTANCE = new ConnectionPool();
     private static final Logger logger = LogManager.getLogger();
     private final String DRIVER_NAME = "driverName";
     private final String PROPERTY_FILE_NAME = "db.properties";
@@ -31,12 +32,8 @@ public class ConnectionPool {
     private final BlockingQueue<Connection> freeConnections;
     private final Lock lock = new ReentrantLock();
 
-    private static class InstanceHolder {
-        private final static ConnectionPool INSTANCE = new ConnectionPool();
-    }
-
     public static ConnectionPool getInstance() {
-        return InstanceHolder.INSTANCE;
+        return INSTANCE;
     }
 
     private ConnectionPool() {

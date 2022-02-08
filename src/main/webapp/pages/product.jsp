@@ -28,15 +28,20 @@
         <div class="row">
             <div class="col-md-7">
                 <div class="row">
-<%--                    TODO fix thumbnail--%>
-                    <div class="col-md-12"><img class="img-thumbnail img-fluid center-block" src="../resources/assets/img/iphone6.jpg" /></div>
+                    <div class="col-md-12">
+<%--                        TODO fix, Tomcat9 issue--%>
+                        <img class="img-thumbnail img-fluid center-block" src="${product.thumbnail}"/>
+                    </div>
                 </div>
             </div>
             <div class="col-md-5">
                 <c:if test="${requestScope.editing}">
-                    <form id="form" action="${pageContext.request.contextPath}/pages/controller?command=SUBMIT_EDITING" method="POST">
+                    <form id="form" action="${pageContext.request.contextPath}/pages/controller?command=SUBMIT_EDITING" method="POST" enctype="multipart/form-data">
                         <p>
                             <input type="hidden" name="id" value="${product.productId}"/>
+                            <input type="hidden" name="oldThumbnail" value="${product.thumbnail}"/>
+                            <label for="file">${sessionScope.thumbnailEditLabel}</label>
+                            <input class="form-control" type="file" id="file" name="file"/><br/>
                             <input class="form-control to-validate" type="text" id="name" name="name" placeholder="Name" value="${product.name}"/><br/>
                             <input class="form-control to-validate" type="text" id="maker" name="maker" placeholder="${sessionScope.makerLabel}" value="${product.maker}"/><br/>
                             <input class="form-control to-validate" type="text" id="body" name="body" placeholder="${sessionScope.bodyLabel}" value="${product.body}"/><br/>
@@ -44,9 +49,11 @@
                             <input class="form-control to-validate" type="text" id="scale" name="scale" placeholder="${sessionScope.scaleLabel}" value="${product.scale}"/><br/>
                             <input class="form-control to-validate" type="text" id="fretAmount" name="fretAmount" placeholder="${sessionScope.fretAmountLabel}" value="${product.fretAmount}"/><br/>
                             <input class="form-control to-validate" type="text" id="picks" name="picks" placeholder="${sessionScope.picksLabel}" value="${product.picks}"/><br/>
-                            <input class="form-control to-validate" type="text" id="beltButton" name="beltButton" placeholder="${sessionScope.beltButtonLabel}" value="${product.beltButton}"/><br/>
+                            <label for="beltButton">${sessionScope.beltButtonLabel}</label>
+                            <input class="to-validate" type="checkbox" id="beltButton" name="beltButton" <c:if test="${product.beltButton}">checked</c:if>/><br/>
                         </p>
                         <h2 class="text-center">
+<%--                            TODO currency conversion--%>
                             <input class="form-control to-validate" type="text" id="price" name="price" placeholder="Price" value="${product.price}"/><br/>
                         </h2>
                         <button class="btn btn-primary" id="button" style="background-color: rgb(38, 157, 157); margin-top: 10px;" type="submit">${sessionScope.submitLabel}</button>
@@ -67,7 +74,7 @@
                         ${sessionScope.picksLabel}: <c:if test="${empty product.picks}">No picks</c:if>${product.picks}<br/>
                         ${sessionScope.beltButtonLabel}: <c:if test="${product.beltButton eq true}">yes</c:if><c:if test="${product.beltButton eq false}">no</c:if><br/>
                     </p>
-                    <h2 class="text-center text-success"><i class="fa fa-dollar"></i>${product.price}<br/><br/><br/></h2>
+                    <h2 class="text-center text-success"><i class="fa fa-dollar"></i>${product.price}</h2><br/>
                 </c:if>
                 <c:choose>
                     <c:when test="${sessionScope.user.role == 1}">

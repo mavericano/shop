@@ -16,6 +16,6 @@ public interface ProductService {
     int retrieveNumberOfProducts(int type) throws ServiceException;
     int retrieveNumberOfProducts(String query) throws ServiceException;
     Product retrieveProductById(int id) throws ServiceException;
-    void updateProduct(int id, String name, String maker, String body, String fret, String scale, String fretAmount, String picks, String beltButton, String price) throws ServiceException, InvalidInputsException;
+    void updateProduct(int id, String thumbnail, String name, String maker, String body, String fret, String scale, String fretAmount, String picks, boolean beltButton, String price) throws ServiceException, InvalidInputsException;
     void submitAdminChanges(List<String> deletedNew, Map<Integer, Integer> addedStocks, List<Product> products) throws ServiceException;
 }

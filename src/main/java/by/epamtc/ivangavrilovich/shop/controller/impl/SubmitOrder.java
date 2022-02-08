@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class SubmitOrder implements Command {
@@ -44,5 +45,10 @@ public class SubmitOrder implements Command {
             request.setAttribute("modalMessage", request.getSession(true).getAttribute("unsuccessfulSubmission"));
             request.getRequestDispatcher("/pages/controller?command=VIEW_CART").forward(request, response);
         }
+    }
+
+    @Override
+    public List<Integer> getAppropriateRoles() {
+        return Arrays.asList(1);
     }
 }

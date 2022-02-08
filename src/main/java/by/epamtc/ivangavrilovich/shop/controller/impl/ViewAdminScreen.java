@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ViewAdminScreen implements Command {
@@ -26,7 +27,6 @@ public class ViewAdminScreen implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.getSession(true).setAttribute("lastAction", request.getQueryString());
-        if (((User)request.getSession(true).getAttribute("user")).getRole() != 3) response.sendRedirect(request.getContextPath() + "/pages/controller?command=VIEW_SIGN_IN");
         UserService userService = ServiceProvider.getInstance().getUserServiceImpl();
         ProductService productService = ServiceProvider.getInstance().getProductServiceImpl();
         OrderService orderService = ServiceProvider.getInstance().getOrderServiceImpl();
@@ -76,5 +76,10 @@ public class ViewAdminScreen implements Command {
             logger.error("Error while loading admin screen", e);
             response.sendRedirect(request.getContextPath() + "/pages/serverException.jsp");
         }
+    }
+
+    @Override
+    public List<Integer> getAppropriateRoles() {
+        return Arrays.asList(3);
     }
 }

@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class SignOut implements Command {
     @Override
@@ -17,5 +19,10 @@ public class SignOut implements Command {
         currentUser.setRole(4); //guest role id
         session.setAttribute("user", currentUser);
         request.getRequestDispatcher("/pages/controller?command=VIEW_HOME_PAGE").forward(request, response);
+    }
+
+    @Override
+    public List<Integer> getAppropriateRoles() {
+        return Arrays.asList(1, 2, 3);
     }
 }

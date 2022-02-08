@@ -49,12 +49,14 @@
         </div>
     </div>
 </div>
-<c:if test="${sessionScope.user.role != 1}">
-    <c:redirect url="/pages/controller?command=VIEW_SIGN_IN"/>
-</c:if>
 <jsp:include page="header.jsp"/>
 <ct:pagination numberOfPages="${requestScope.numberOfPages}" currentPage="${requestScope.page}" path="/pages/controller?command=VIEW_CART&page="/>
-<ct:cartGrid products="${requestScope.products}"/>
+<c:if test="${empty requestScope.products}">
+    <c:out value="${sessionScope.emptyCartLabel}"/>
+</c:if>
+<c:if test="${not empty requestScope.products}">
+    <ct:cartGrid products="${requestScope.products}"/>
+</c:if>
 <form id="form" action="${pageContext.request.contextPath}/pages/controller?command=SUBMIT_ORDER" method="POST">
     <div class="row py-5 p-4 bg-white rounded shadow-sm">
         <div class="col-lg-6">
